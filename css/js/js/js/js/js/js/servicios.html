@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motoras - Servicios</title>
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+<header>
+  <h1>🚗 MOTORAS</h1>
+  <p>Asistencia mecánica inteligente con IA</p>
+</header>
+
+<nav>
+  <a href="index.html"><button>Inicio</button></a>
+  <a href="usuario.html"><button>Usuario</button></a>
+  <a href="diagnostico.html"><button>IA Mecánica</button></a>
+  <a href="servicios.html" class="activo"><button>Servicios</button></a>
+  <a href="prestador.html"><button>Prestadores</button></a>
+</nav>
+
+<main>
+  <div class="card">
+    <h2>🔧 Solicitar asistencia Motoras</h2>
+
+    <select id="tipoServicio">
+      <option>Mecánico móvil</option>
+      <option>Grúa</option>
+      <option>Taller</option>
+    </select>
+
+    <input id="ubicacion" placeholder="Ubicación del vehículo">
+
+    <button class="btn" onclick="buscarServicio()">Buscar ayuda</button>
+
+    <div id="servicioResultado" class="resultado" style="display:none;"></div>
+
+    <h3>📍 Mapa demo</h3>
+    <div class="resultado">
+      🔴 Tu ubicación<br>
+      🟢 Taller Motoras a 2 km<br>
+      🟢 Mecánico disponible a 3 km<br>
+      🟢 Grúa disponible a 5 km
+    </div>
+  </div>
+</main>
+
+<footer>Motoras © 2026 - Demo</footer>
+
+<script src="js/servicios.js"></script>
+</body>
+</html>
