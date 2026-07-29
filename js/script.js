@@ -1,4 +1,10 @@
-// ===== Diagnóstico IA =====
+// ===== Navegación entre secciones =====
+function mostrar(idSeccion) {
+  document.querySelectorAll('section').forEach(function (seccion) {
+    seccion.classList.remove('activo');
+  });
+  document.getElementById(idSeccion).classList.add('activo');
+}// ===== Diagnóstico IA =====
 const URL_API = "http://localhost:3000/ia/diagnostico";
 
 async function diagnosticar() {
