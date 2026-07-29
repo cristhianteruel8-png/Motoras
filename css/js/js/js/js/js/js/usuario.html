@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motoras - Usuario</title>
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+<header>
+  <h1>🚗 MOTORAS</h1>
+  <p>Asistencia mecánica inteligente con IA</p>
+</header>
+
+<nav>
+  <a href="index.html"><button>Inicio</button></a>
+  <a href="usuario.html" class="activo"><button>Usuario</button></a>
+  <a href="diagnostico.html"><button>IA Mecánica</button></a>
+  <a href="servicios.html"><button>Servicios</button></a>
+  <a href="prestador.html"><button>Prestadores</button></a>
+</nav>
+
+<main>
+  <div class="card">
+    <h2>Registro de usuario</h2>
+
+    <input id="nombre" placeholder="Nombre completo">
+    <input id="email" placeholder="Email">
+
+    <h3>Datos del vehículo</h3>
+    <input id="auto" placeholder="Marca y modelo">
+    <input id="anio" placeholder="Año">
+    <input id="motor" placeholder="Motor">
+
+    <button class="btn" onclick="guardarUsuario()">Guardar datos</button>
+
+    <div id="usuarioResultado" class="resultado" style="display:none;"></div>
+  </div>
+</main>
+
+<footer>Motoras © 2026 - Demo</footer>
+
+<script src="js/usuario.js"></script>
+</body>
+      </html>
