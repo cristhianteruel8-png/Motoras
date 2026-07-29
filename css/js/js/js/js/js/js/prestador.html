@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motoras - Prestadores</title>
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+<header>
+  <h1>🚗 MOTORAS</h1>
+  <p>Asistencia mecánica inteligente con IA</p>
+</header>
+
+<nav>
+  <a href="index.html"><button>Inicio</button></a>
+  <a href="usuario.html"><button>Usuario</button></a>
+  <a href="diagnostico.html"><button>IA Mecánica</button></a>
+  <a href="servicios.html"><button>Servicios</button></a>
+  <a href="prestador.html" class="activo"><button>Prestadores</button></a>
+</nav>
+
+<main>
+  <div class="card">
+    <h2>🛠 Panel del prestador</h2>
+    <p>Cuenta de mecánico / taller / grúa</p>
+
+    <div class="resultado" id="pedido">
+      Nuevo pedido:<br><br>
+      Cliente: Cristian<br>
+      Vehículo: Chevrolet Zafira 2.0<br>
+      Problema: Se apaga al sacar la marcha<br><br>
+      Estado: <span id="estadoPedido">Esperando aceptación</span>
+    </div>
+
+    <button class="btn" id="btnAceptar" onclick="aceptarTrabajo()">Aceptar trabajo</button>
+
+    <div id="trabajo" class="resultado" style="display:none;"></div>
+  </div>
+</main>
+
+<footer>Motoras © 2026 - Demo</footer>
+
+<script src="js/prestador.js"></script>
+</body>
+</html>
