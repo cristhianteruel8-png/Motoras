@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motoras - Asistencia Automotriz Inteligente</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    color: #222;
+}
+
+header {
+    background: #111;
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.logo {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+section {
+    padding: 30px;
+    text-align: center;
+}
+
+.card {
+    background: white;
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 500px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px #ccc;
+}
+
+button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+footer {
+    background: #111;
+    color: white;
+    text-align: center;
+    padding: 15px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<div class="logo">MOTORAS</div>
+<p>Asistencia automotriz inteligente con inteligencia artificial</p>
+</header>
+
+
+<section>
+
+<div class="card">
+<h2>Diagnóstico inteligente</h2>
+<p>Contanos qué problema tiene tu vehículo y Motoras te ayuda a encontrar una posible solución.</p>
+</div>
+
+
+<div class="card">
+<h2>Conexión con profesionales</h2>
+<p>Encontrá mecánicos, grúas y asistencia cuando más lo necesitás.</p>
+</div>
+
+
+<div class="card">
+<h2>Asistencia en tiempo real</h2>
+<p>Una plataforma creada para conectar conductores con soluciones automotrices.</p>
+</div>
+
+
+<button>
+Comenzar
+</button>
+
+</section>
+
+
+<footer>
+© 2026 Motoras - Plataforma Automotriz Inteligente
+</footer>
+
+</body>
+</html>
