@@ -1,0 +1,126 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #101010;
+  color: white;
+}
+
+header {
+  background: #d90429;
+  padding: 25px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 45px;
+  margin: 0;
+}
+
+nav {
+  background: #222;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+nav a {
+  text-decoration: none;
+}
+
+nav a button,
+nav button {
+  background: #d90429;
+  color: white;
+  border: 0;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+nav a.activo button {
+  background: #7a021a;
+}
+
+main {
+  padding: 25px;
+}
+
+.card {
+  background: #1e1e1e;
+  max-width: 600px;
+  margin: auto;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px #000;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 0;
+}
+
+textarea {
+  height: 120px;
+}
+
+.btn {
+  background: #d90429;
+  color: white;
+  border: 0;
+  padding: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.btn:disabled {
+  background: #6b6b6b;
+  cursor: not-allowed;
+}
+
+.resultado {
+  background: #333;
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 10px;
+}
+
+.error {
+  background: #4a1414;
+  color: #ff8080;
+}
+
+.tarjetas {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tarjeta {
+  background: #222;
+  padding: 20px;
+  border-radius: 12px;
+  width: 200px;
+  text-align: center;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+}
