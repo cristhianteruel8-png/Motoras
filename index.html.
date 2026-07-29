@@ -3,56 +3,118 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Motoras - Asistencia Automotriz Inteligente</title>
+
+<title>Motoras | Asistencia Automotriz Inteligente</title>
 
 <style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f2f2f2;
-    color: #222;
+*{
+    box-sizing:border-box;
 }
 
-header {
-    background: #111;
-    color: white;
-    padding: 30px;
-    text-align: center;
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:#0b0f19;
+    color:white;
 }
 
-.logo {
-    font-size: 40px;
-    font-weight: bold;
+header{
+    padding:40px 20px;
+    text-align:center;
+    background:linear-gradient(135deg,#111827,#2563eb);
 }
 
-section {
-    padding: 30px;
-    text-align: center;
+.logo{
+    font-size:48px;
+    font-weight:900;
+    letter-spacing:2px;
 }
 
-.card {
-    background: white;
-    margin: 20px auto;
-    padding: 20px;
-    max-width: 500px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px #ccc;
+header p{
+    font-size:20px;
 }
 
-button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 15px 25px;
-    border-radius: 10px;
-    font-size: 16px;
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:30px 20px;
 }
 
-footer {
-    background: #111;
-    color: white;
-    text-align: center;
-    padding: 15px;
+.hero{
+    text-align:center;
+    padding:40px 10px;
+}
+
+.hero h1{
+    font-size:38px;
+}
+
+.hero span{
+    color:#38bdf8;
+}
+
+.btn{
+    display:inline-block;
+    margin:10px;
+    padding:15px 25px;
+    border-radius:12px;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.cards{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    justify-content:center;
+}
+
+.card{
+    background:#111827;
+    border:1px solid #334155;
+    padding:25px;
+    border-radius:18px;
+    width:300px;
+    text-align:center;
+}
+
+.card h2{
+    color:#38bdf8;
+}
+
+.demo{
+    background:#ffffff;
+    color:#111;
+    padding:30px;
+    border-radius:20px;
+    margin-top:40px;
+    text-align:center;
+}
+
+input, select{
+    width:90%;
+    padding:12px;
+    margin:8px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+button{
+    padding:12px 25px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+footer{
+    text-align:center;
+    padding:20px;
+    background:#020617;
+    margin-top:40px;
 }
 </style>
 
@@ -62,35 +124,78 @@ footer {
 
 <header>
 <div class="logo">MOTORAS</div>
-<p>Asistencia automotriz inteligente con inteligencia artificial</p>
+<p>La nueva forma inteligente de solucionar problemas de tu vehículo</p>
 </header>
 
 
-<section>
+<div class="container">
+
+<section class="hero">
+<h1>Asistencia automotriz con <span>Inteligencia Artificial</span></h1>
+
+<p>
+Motoras conecta conductores, inteligencia artificial, mecánicos y servicios de asistencia en un solo lugar.
+</p>
+
+<a class="btn" href="#diagnostico">Diagnosticar vehículo</a>
+<a class="btn" href="#servicios">Solicitar ayuda</a>
+
+</section>
+
+
+<section id="servicios" class="cards">
 
 <div class="card">
-<h2>Diagnóstico inteligente</h2>
-<p>Contanos qué problema tiene tu vehículo y Motoras te ayuda a encontrar una posible solución.</p>
+<h2>🤖 Diagnóstico IA</h2>
+<p>
+Contanos qué falla presenta tu vehículo y recibí una orientación inicial.
+</p>
 </div>
-
 
 <div class="card">
-<h2>Conexión con profesionales</h2>
-<p>Encontrá mecánicos, grúas y asistencia cuando más lo necesitás.</p>
+<h2>🔧 Mecánicos</h2>
+<p>
+Encontrá profesionales disponibles para ayudarte.
+</p>
 </div>
-
 
 <div class="card">
-<h2>Asistencia en tiempo real</h2>
-<p>Una plataforma creada para conectar conductores con soluciones automotrices.</p>
+<h2>🚨 Grúas</h2>
+<p>
+Solicitá asistencia cuando tu vehículo no pueda continuar.
+</p>
 </div>
 
+</section>
+
+
+<section id="diagnostico" class="demo">
+
+<h2>Demo de diagnóstico Motoras</h2>
+
+<p>Ingresá los datos del vehículo:</p>
+
+<input placeholder="Marca y modelo">
+
+<input placeholder="Año">
+
+<select>
+<option>Seleccionar problema</option>
+<option>No arranca</option>
+<option>Se apaga</option>
+<option>Pierde potencia</option>
+<option>Luz de motor encendida</option>
+</select>
+
+<br>
 
 <button>
-Comenzar
+Analizar problema
 </button>
 
 </section>
+
+</div>
 
 
 <footer>
