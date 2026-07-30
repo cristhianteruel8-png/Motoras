@@ -258,3 +258,10 @@ footer {
     width: 130px;
   }
   }
+section {
+  display: none;
+}
+
+section.activo {
+  display: block;
+}
