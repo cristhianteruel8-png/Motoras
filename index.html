@@ -49,7 +49,7 @@
       <div id="usuario-login" class="tab-panel activo-tab-panel">
         <input id="loginEmailUsuario" placeholder="Email">
         <input id="loginPassUsuario" type="password" placeholder="Contraseña">
-        <button class="btn" onclick="loginDemo('usuario')">Iniciar sesión</button>
+        <button class="btn" onclick="iniciarSesionUsuarioReal()">Iniciar sesión</button>
       </div>
 
       <div id="usuario-registro" class="tab-panel">
@@ -60,7 +60,7 @@
         <input id="auto" placeholder="Marca y modelo">
         <input id="anio" placeholder="Año">
         <input id="motor" placeholder="Motor">
-        <button class="btn" onclick="guardarUsuario()">Crear cuenta</button>
+        <button class="btn" onclick="registrarUsuarioReal()">Crear cuenta</button>
       </div>
 
       <div id="usuarioResultado" class="resultado" style="display:none;"></div>
@@ -113,7 +113,7 @@
       <div id="prestador-login" class="tab-panel activo-tab-panel">
         <input id="loginEmailPrestador" placeholder="Email">
         <input id="loginPassPrestador" type="password" placeholder="Contraseña">
-        <button class="btn" onclick="loginDemo('prestador')">Iniciar sesión</button>
+        <button class="btn" onclick="iniciarSesionPrestadorReal()">Iniciar sesión</button>
       </div>
 
       <div id="prestador-registro" class="tab-panel">
@@ -125,7 +125,7 @@
           <option>Grúa</option>
         </select>
         <input id="zonaPrestador" placeholder="Zona de cobertura">
-        <button class="btn" onclick="registrarPrestadorDemo()">Registrarme como prestador</button>
+        <button class="btn" onclick="registrarPrestadorReal()">Registrarme como prestador</button>
       </div>
 
       <div id="prestadorResultado" class="resultado" style="display:none;"></div>
@@ -172,8 +172,14 @@
 
 <footer>Motoras © 2026 - Demo</footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/script.js"></script>
 <script>
+const supabaseClient = supabase.createClient(
+  'https://zeidclylnspvmqfnojtq.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplaWRjbHlsbnNwdm1xZm5vanRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU0NTMxOTIsImV4cCI6MjEwMTAyOTE5Mn0.r-0PBjCs6SQRYXtnZjzyOZbzHgPlzBt-pvDq6CKjtqI'
+);
+
 function cambiarTab(seccion, tab, boton) {
   document.getElementById(seccion + '-login').classList.toggle('activo-tab-panel', tab === 'login');
   document.getElementById(seccion + '-registro').classList.toggle('activo-tab-panel', tab === 'registro');
@@ -183,19 +189,84 @@ function cambiarTab(seccion, tab, boton) {
   boton.classList.add('activo-tab');
 }
 
-function loginDemo(seccion) {
-  var div = document.getElementById(seccion === 'usuario' ? 'usuarioResultado' : 'prestadorResultado');
+async function registrarUsuarioReal() {
+  const nombre = document.getElementById('nombre').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('passUsuario').value;
+  const auto = document.getElementById('auto').value;
+  const anio = document.getElementById('anio').value;
+  const motor = document.getElementById('motor').value;
+
+  const div = document.getElementById('usuarioResultado');
   div.style.display = 'block';
-  div.textContent = 'Sesión iniciada (demo)';
-  if (seccion === 'prestador') {
-    document.getElementById('prestadorPanel').style.display = 'block';
+  div.textContent = 'Creando cuenta...';
+
+  const { data, error } = await supabaseClient.auth.signUp({ email, password });
+  if (error) {
+    div.textContent = 'Error: ' + error.message;
+    return;
   }
+
+  const { error: errorPerfil } = await supabaseClient
+    .from('perfiles_usuario')
+    .insert([{ id: data.user.id, nombre, auto, anio, motor }]);
+
+  div.textContent = errorPerfil
+    ? 'Cuenta creada, pero hubo un error guardando el perfil: ' + errorPerfil.message
+    : 'Cuenta creada. Revisá tu email para confirmarla antes de iniciar sesión.';
 }
 
-function registrarPrestadorDemo() {
-  var div = document.getElementById('prestadorResultado');
+async function iniciarSesionUsuarioReal() {
+  const email = document.getElementById('loginEmailUsuario').value;
+  const password = document.getElementById('loginPassUsuario').value;
+  const div = document.getElementById('usuarioResultado');
   div.style.display = 'block';
-  div.textContent = 'Registro de prestador enviado (demo)';
+  div.textContent = 'Iniciando sesión...';
+
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  div.textContent = error ? 'Error: ' + error.message : 'Sesión iniciada. ¡Bienvenido!';
+}
+
+async function registrarPrestadorReal() {
+  const nombre = document.getElementById('nombrePrestador').value;
+  const email = document.getElementById('emailPrestador').value;
+  const password = document.getElementById('passPrestador').value;
+  const tipo = document.getElementById('tipoPrestador').value;
+  const zona = document.getElementById('zonaPrestador').value;
+
+  const div = document.getElementById('prestadorResultado');
+  div.style.display = 'block';
+  div.textContent = 'Registrando...';
+
+  const { data, error } = await supabaseClient.auth.signUp({ email, password });
+  if (error) {
+    div.textContent = 'Error: ' + error.message;
+    return;
+  }
+
+  const { error: errorPerfil } = await supabaseClient
+    .from('perfiles_prestador')
+    .insert([{ id: data.user.id, nombre, tipo, zona }]);
+
+  div.textContent = errorPerfil
+    ? 'Cuenta creada, pero hubo un error guardando el perfil: ' + errorPerfil.message
+    : 'Registro enviado. Revisá tu email para confirmarlo antes de iniciar sesión.';
+}
+
+async function iniciarSesionPrestadorReal() {
+  const email = document.getElementById('loginEmailPrestador').value;
+  const password = document.getElementById('loginPassPrestador').value;
+  const div = document.getElementById('prestadorResultado');
+  div.style.display = 'block';
+  div.textContent = 'Iniciando sesión...';
+
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if (error) {
+    div.textContent = 'Error: ' + error.message;
+    return;
+  }
+  div.textContent = 'Sesión iniciada. ¡Bienvenido!';
+  document.getElementById('prestadorPanel').style.display = 'block';
 }
 </script>
 </body>
