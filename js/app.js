@@ -187,10 +187,9 @@ async function guardarPedidoReal() {
 }
 
 /* ---------- MAPA ---------- */
-let mapa;
-let marcadorUsuario;
+const mapas = {};
 
-function obtenerUbicacion() {
+function obtenerUbicacion(containerId, textId) {
   if (!navigator.geolocation) {
     alert('Tu navegador no soporta GPS.');
     return;
@@ -200,27 +199,31 @@ function obtenerUbicacion() {
     const lat = pos.coords.latitude;
     const lon = pos.coords.longitude;
 
-    document.getElementById('ubicacionTexto').innerHTML =
+    document.getElementById(textId).innerHTML =
       '📍 Latitud: ' + lat + '<br>📍 Longitud: ' + lon;
 
-    if (!mapa) {
-      mapa = L.map('mapaMotoras').setView([lat, lon], 14);
+    if (!mapas[containerId]) {
+      const mapa = L.map(containerId).setView([lat, lon], 14);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
       }).addTo(mapa);
+      mapas[containerId] = { map: mapa, marker: null };
     } else {
-      mapa.setView([lat, lon], 14);
-      if (marcadorUsuario) {
-        mapa.removeLayer(marcadorUsuario);
+      mapas[containerId].map.setView([lat, lon], 14);
+      if (mapas[containerId].marker) {
+        mapas[containerId].map.removeLayer(mapas[containerId].marker);
       }
     }
 
-    marcadorUsuario = L.marker([lat, lon]).addTo(mapa).bindPopup('📍 Tu ubicación').openPopup();
+    mapas[containerId].marker = L.marker([lat, lon])
+      .addTo(mapas[containerId].map)
+      .bindPopup('📍 Tu ubicación')
+      .openPopup();
 
     /* DEMO */
-    L.marker([lat + 0.01, lon + 0.005]).addTo(mapa).bindPopup('🔧 Mecánico Motoras');
-    L.marker([lat - 0.008, lon - 0.004]).addTo(mapa).bindPopup('🚚 Grúa');
-    L.marker([lat + 0.006, lon - 0.01]).addTo(mapa).bindPopup('🏢 Taller');
+    L.marker([lat + 0.01, lon + 0.005]).addTo(mapas[containerId].map).bindPopup('🔧 Mecánico Motoras');
+    L.marker([lat - 0.008, lon - 0.004]).addTo(mapas[containerId].map).bindPopup('🚚 Grúa');
+    L.marker([lat + 0.006, lon - 0.01]).addTo(mapas[containerId].map).bindPopup('🏢 Taller');
   });
 }
