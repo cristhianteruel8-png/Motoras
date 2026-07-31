@@ -90,7 +90,7 @@
       <input id="codigo" placeholder="Código OBD2 (opcional)">
       <input type="file" accept="image/*">
       <input type="file" accept="audio/*">
-      <button class="btn" id="btnDiagnosticar" onclick="diagnosticar()">Analizar falla</button>
+      <button class="btn" id="btnDiagnosticar" onclick="guardarDiagnosticoReal()">Analizar falla</button>
       <div id="respuestaIA" class="resultado">Esperando diagnóstico...</div>
     </div>
   </section>
@@ -104,7 +104,7 @@
         <option>Taller</option>
       </select>
       <input id="ubicacion" placeholder="Ubicación del vehículo">
-      <button class="btn" onclick="buscarServicio()">Buscar ayuda</button>
+      <button class="btn" onclick="guardarPedidoReal()">Buscar ayuda</button>
       <div id="servicioResultado" class="resultado" style="display:none;"></div>
       <h3>📍 Mapa demo</h3>
       <div class="resultado">
@@ -340,6 +340,51 @@ async function cerrarSesionPrestador() {
   document.getElementById('prestadorAuthBox').style.display = 'block';
   document.getElementById('prestadorResultado').style.display = 'none';
 }
+
+async function guardarDiagnosticoReal() {
+  const problema = document.getElementById('problema').value;
+  const codigo = document.getElementById('codigo').value;
+  const div = document.getElementById('respuestaIA');
+
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) {
+    div.textContent = 'Iniciá sesión como usuario primero para guardar tu diagnóstico.';
+    return;
+  }
+
+  div.textContent = 'Guardando diagnóstico...';
+
+  const { error } = await supabaseClient
+    .from('diagnosticos')
+    .insert([{ usuario_id: user.id, problema, codigo }]);
+
+  div.textContent = error
+    ? 'Error al guardar: ' + error.message
+    : 'Diagnóstico guardado. Pronto vamos a conectar el análisis con IA real.';
+}
+
+async function guardarPedidoReal() {
+  const tipoServicio = document.getElementById('tipoServicio').value;
+  const ubicacion = document.getElementById('ubicacion').value;
+  const div = document.getElementById('servicioResultado');
+  div.style.display = 'block';
+
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) {
+    div.textContent = 'Iniciá sesión como usuario primero para pedir ayuda.';
+    return;
+  }
+
+  div.textContent = 'Enviando pedido...';
+
+  const { error } = await supabaseClient
+    .from('pedidos')
+    .insert([{ usuario_id: user.id, tipo_servicio: tipoServicio, ubicacion }]);
+
+  div.textContent = error
+    ? 'Error al guardar: ' + error.message
+    : 'Pedido enviado. Un prestador lo va a ver pronto.';
+}
 </script>
 </body>
-</html>
+  </html>
