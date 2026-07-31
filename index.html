@@ -40,14 +40,29 @@
 
   <section id="usuario">
     <div class="card">
-      <h2>Registro de usuario</h2>
-      <input id="nombre" placeholder="Nombre completo">
-      <input id="email" placeholder="Email">
-      <h3>Datos del vehículo</h3>
-      <input id="auto" placeholder="Marca y modelo">
-      <input id="anio" placeholder="Año">
-      <input id="motor" placeholder="Motor">
-      <button class="btn" onclick="guardarUsuario()">Guardar datos</button>
+      <h2>Mi cuenta</h2>
+      <div class="tabs">
+        <button class="tab-btn activo-tab" onclick="cambiarTab('usuario','login',this)">Iniciar sesión</button>
+        <button class="tab-btn" onclick="cambiarTab('usuario','registro',this)">Registrarse</button>
+      </div>
+
+      <div id="usuario-login" class="tab-panel activo-tab-panel">
+        <input id="loginEmailUsuario" placeholder="Email">
+        <input id="loginPassUsuario" type="password" placeholder="Contraseña">
+        <button class="btn" onclick="loginDemo('usuario')">Iniciar sesión</button>
+      </div>
+
+      <div id="usuario-registro" class="tab-panel">
+        <input id="nombre" placeholder="Nombre completo">
+        <input id="email" placeholder="Email">
+        <input id="passUsuario" type="password" placeholder="Contraseña">
+        <h3>Datos del vehículo</h3>
+        <input id="auto" placeholder="Marca y modelo">
+        <input id="anio" placeholder="Año">
+        <input id="motor" placeholder="Motor">
+        <button class="btn" onclick="guardarUsuario()">Crear cuenta</button>
+      </div>
+
       <div id="usuarioResultado" class="resultado" style="display:none;"></div>
     </div>
   </section>
@@ -88,8 +103,34 @@
 
   <section id="prestador">
     <div class="card">
-      <h2>🛠 Panel del prestador</h2>
-      <p>Cuenta de mecánico / taller / grúa</p>
+      <h2>🛠 Cuenta de prestador</h2>
+      <p>Mecánico, taller o grúa</p>
+      <div class="tabs">
+        <button class="tab-btn activo-tab" onclick="cambiarTab('prestador','login',this)">Iniciar sesión</button>
+        <button class="tab-btn" onclick="cambiarTab('prestador','registro',this)">Registrarse</button>
+      </div>
+
+      <div id="prestador-login" class="tab-panel activo-tab-panel">
+        <input id="loginEmailPrestador" placeholder="Email">
+        <input id="loginPassPrestador" type="password" placeholder="Contraseña">
+        <button class="btn" onclick="loginDemo('prestador')">Iniciar sesión</button>
+      </div>
+
+      <div id="prestador-registro" class="tab-panel">
+        <input id="nombrePrestador" placeholder="Nombre completo o del taller">
+        <input id="emailPrestador" placeholder="Email">
+        <input id="passPrestador" type="password" placeholder="Contraseña">
+        <select id="tipoPrestador">
+          <option>Taller</option>
+          <option>Grúa</option>
+        </select>
+        <input id="zonaPrestador" placeholder="Zona de cobertura">
+        <button class="btn" onclick="registrarPrestadorDemo()">Registrarme como prestador</button>
+      </div>
+
+      <div id="prestadorResultado" class="resultado" style="display:none;"></div>
+
+      <h3 style="margin-top:20px;">📋 Ejemplo de pedido entrante</h3>
       <div class="resultado" id="pedido">
         Nuevo pedido:<br><br>
         Cliente: Cristian<br>
@@ -130,5 +171,27 @@
 <footer>Motoras © 2026 - Demo</footer>
 
 <script src="js/script.js"></script>
+<script>
+function cambiarTab(seccion, tab, boton) {
+  document.getElementById(seccion + '-login').classList.toggle('activo-tab-panel', tab === 'login');
+  document.getElementById(seccion + '-registro').classList.toggle('activo-tab-panel', tab === 'registro');
+  document.querySelectorAll('#' + seccion + ' .tab-btn').forEach(function(b) {
+    b.classList.remove('activo-tab');
+  });
+  boton.classList.add('activo-tab');
+}
+
+function loginDemo(seccion) {
+  var div = document.getElementById(seccion === 'usuario' ? 'usuarioResultado' : 'prestadorResultado');
+  div.style.display = 'block';
+  div.textContent = 'Sesión iniciada (demo)';
+}
+
+function registrarPrestadorDemo() {
+  var div = document.getElementById('prestadorResultado');
+  div.style.display = 'block';
+  div.textContent = 'Registro de prestador enviado (demo)';
+}
+</script>
 </body>
   </html>
