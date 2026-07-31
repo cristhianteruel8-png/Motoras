@@ -97,9 +97,54 @@ nav button.activo {
   background: var(--rojo-oscuro);
 }
 
+/* ---------- TABS LOGIN / REGISTRO ---------- */
+.tabs {
+  display: flex;
+  gap: 12px;
+  margin: 4px 0 20px;
+}
+
+.tab-btn {
+  flex: 1;
+  background: var(--superficie-2);
+  color: var(--gris);
+  border: 2px solid #333;
+  padding: 14px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: 'Oswald', Arial, sans-serif;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.tab-btn.activo-tab {
+  background: var(--rojo);
+  color: #fff;
+  border-color: var(--rojo);
+  box-shadow: 0 4px 12px rgba(217, 4, 41, 0.35);
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.activo-tab-panel {
+  display: block;
+}
+
 /* ---------- MAIN / CARD ---------- */
 main {
   padding: 25px 16px 60px;
+}
+
+section {
+  display: none;
+}
+
+section.activo {
+  display: block;
 }
 
 .card {
@@ -159,6 +204,34 @@ select:focus-visible {
 textarea {
   height: 120px;
   resize: vertical;
+}
+
+input[type="file"] {
+  padding: 10px;
+  color: var(--gris);
+  font-size: 13px;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+  background: var(--rojo);
+  color: #fff;
+  border: 0;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Oswald', Arial, sans-serif;
+  text-transform: uppercase;
+  font-size: 12px;
+  margin-right: 10px;
+}
+
+#estrellas {
+  font-size: 20px;
+}
+
+#estadoPedido {
+  color: var(--dorado);
+  font-weight: 600;
 }
 
 /* ---------- BOTONES ---------- */
@@ -257,38 +330,4 @@ footer {
   .tarjeta {
     width: 130px;
   }
-  }
-section {
-  display: none;
 }
-
-section.activo {
-  display: block;
-}
-input[type="file"] {
-  padding: 10px;
-  color: var(--gris);
-  font-size: 13px;
-}
-
-input[type="file"]::-webkit-file-upload-button {
-  background: var(--rojo);
-  color: #fff;
-  border: 0;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: 'Oswald', Arial, sans-serif;
-  text-transform: uppercase;
-  font-size: 12px;
-  margin-right: 10px;
-}
-
-#estrellas {
-  font-size: 20px;
-}
-
-#estadoPedido {
-  color: var(--dorado);
-  font-weight: 600;
-      }
