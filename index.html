@@ -130,16 +130,18 @@
 
       <div id="prestadorResultado" class="resultado" style="display:none;"></div>
 
-      <h3 style="margin-top:20px;">📋 Ejemplo de pedido entrante</h3>
-      <div class="resultado" id="pedido">
-        Nuevo pedido:<br><br>
-        Cliente: Cristian<br>
-        Vehículo: Chevrolet Zafira 2.0<br>
-        Problema: Se apaga al sacar la marcha<br><br>
-        Estado: <span id="estadoPedido">Esperando aceptación</span>
+      <div id="prestadorPanel" style="display:none;">
+        <h3 style="margin-top:20px;">📋 Ejemplo de pedido entrante</h3>
+        <div class="resultado" id="pedido">
+          Nuevo pedido:<br><br>
+          Cliente: Cristian<br>
+          Vehículo: Chevrolet Zafira 2.0<br>
+          Problema: Se apaga al sacar la marcha<br><br>
+          Estado: <span id="estadoPedido">Esperando aceptación</span>
+        </div>
+        <button class="btn" id="btnAceptar" onclick="aceptarTrabajo()">Aceptar trabajo</button>
+        <div id="trabajo" class="resultado" style="display:none;"></div>
       </div>
-      <button class="btn" id="btnAceptar" onclick="aceptarTrabajo()">Aceptar trabajo</button>
-      <div id="trabajo" class="resultado" style="display:none;"></div>
     </div>
   </section>
 
@@ -185,6 +187,9 @@ function loginDemo(seccion) {
   var div = document.getElementById(seccion === 'usuario' ? 'usuarioResultado' : 'prestadorResultado');
   div.style.display = 'block';
   div.textContent = 'Sesión iniciada (demo)';
+  if (seccion === 'prestador') {
+    document.getElementById('prestadorPanel').style.display = 'block';
+  }
 }
 
 function registrarPrestadorDemo() {
@@ -194,4 +199,4 @@ function registrarPrestadorDemo() {
 }
 </script>
 </body>
-  </html>
+          </html>
