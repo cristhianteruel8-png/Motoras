@@ -41,29 +41,44 @@
   <section id="usuario">
     <div class="card">
       <h2>Mi cuenta</h2>
-      <div class="tabs">
-        <button class="tab-btn activo-tab" onclick="cambiarTab('usuario','login',this)">Iniciar sesión</button>
-        <button class="tab-btn" onclick="cambiarTab('usuario','registro',this)">Registrarse</button>
+
+      <div id="usuarioAuthBox">
+        <div class="tabs">
+          <button class="tab-btn activo-tab" onclick="cambiarTab('usuario','login',this)">Iniciar sesión</button>
+          <button class="tab-btn" onclick="cambiarTab('usuario','registro',this)">Registrarse</button>
+        </div>
+
+        <div id="usuario-login" class="tab-panel activo-tab-panel">
+          <input id="loginEmailUsuario" placeholder="Email">
+          <input id="loginPassUsuario" type="password" placeholder="Contraseña">
+          <button class="btn" onclick="iniciarSesionUsuarioReal()">Iniciar sesión</button>
+        </div>
+
+        <div id="usuario-registro" class="tab-panel">
+          <input id="nombre" placeholder="Nombre completo">
+          <input id="email" placeholder="Email">
+          <input id="passUsuario" type="password" placeholder="Contraseña">
+          <h3>Datos del vehículo</h3>
+          <input id="auto" placeholder="Marca y modelo">
+          <input id="anio" placeholder="Año">
+          <input id="motor" placeholder="Motor">
+          <button class="btn" onclick="registrarUsuarioReal()">Crear cuenta</button>
+        </div>
+
+        <div id="usuarioResultado" class="resultado" style="display:none;"></div>
       </div>
 
-      <div id="usuario-login" class="tab-panel activo-tab-panel">
-        <input id="loginEmailUsuario" placeholder="Email">
-        <input id="loginPassUsuario" type="password" placeholder="Contraseña">
-        <button class="btn" onclick="iniciarSesionUsuarioReal()">Iniciar sesión</button>
+      <div id="usuarioPanel" style="display:none;">
+        <h3>¡Bienvenido!</h3>
+        <p>Tu sesión de usuario está activa.</p>
+        <div class="tarjetas" style="margin-bottom:10px;">
+          <div class="tarjeta" style="cursor:pointer;" onclick="mostrar('diagnostico')">🤖<br>Diagnóstico</div>
+          <div class="tarjeta" style="cursor:pointer;" onclick="mostrar('servicios')">🔧<br>Servicios</div>
+          <div class="tarjeta" style="cursor:pointer;" onclick="mostrar('pago')">💰<br>Pago</div>
+          <div class="tarjeta" style="cursor:pointer;" onclick="mostrar('calificacion')">⭐<br>Calificar</div>
+        </div>
+        <button class="btn" onclick="cerrarSesionUsuario()">Cerrar sesión</button>
       </div>
-
-      <div id="usuario-registro" class="tab-panel">
-        <input id="nombre" placeholder="Nombre completo">
-        <input id="email" placeholder="Email">
-        <input id="passUsuario" type="password" placeholder="Contraseña">
-        <h3>Datos del vehículo</h3>
-        <input id="auto" placeholder="Marca y modelo">
-        <input id="anio" placeholder="Año">
-        <input id="motor" placeholder="Motor">
-        <button class="btn" onclick="registrarUsuarioReal()">Crear cuenta</button>
-      </div>
-
-      <div id="usuarioResultado" class="resultado" style="display:none;"></div>
     </div>
   </section>
 
@@ -105,32 +120,44 @@
     <div class="card">
       <h2>🛠 Cuenta de prestador</h2>
       <p>Mecánico, taller o grúa</p>
-      <div class="tabs">
-        <button class="tab-btn activo-tab" onclick="cambiarTab('prestador','login',this)">Iniciar sesión</button>
-        <button class="tab-btn" onclick="cambiarTab('prestador','registro',this)">Registrarse</button>
-      </div>
 
-      <div id="prestador-login" class="tab-panel activo-tab-panel">
-        <input id="loginEmailPrestador" placeholder="Email">
-        <input id="loginPassPrestador" type="password" placeholder="Contraseña">
-        <button class="btn" onclick="iniciarSesionPrestadorReal()">Iniciar sesión</button>
-      </div>
+      <div id="prestadorAuthBox">
+        <div class="tabs">
+          <button class="tab-btn activo-tab" onclick="cambiarTab('prestador','login',this)">Iniciar sesión</button>
+          <button class="tab-btn" onclick="cambiarTab('prestador','registro',this)">Registrarse</button>
+        </div>
 
-      <div id="prestador-registro" class="tab-panel">
-        <input id="nombrePrestador" placeholder="Nombre completo o del taller">
-        <input id="emailPrestador" placeholder="Email">
-        <input id="passPrestador" type="password" placeholder="Contraseña">
-        <select id="tipoPrestador">
-          <option>Taller</option>
-          <option>Grúa</option>
-        </select>
-        <input id="zonaPrestador" placeholder="Zona de cobertura">
-        <button class="btn" onclick="registrarPrestadorReal()">Registrarme como prestador</button>
-      </div>
+        <div id="prestador-login" class="tab-panel activo-tab-panel">
+          <input id="loginEmailPrestador" placeholder="Email">
+          <input id="loginPassPrestador" type="password" placeholder="Contraseña">
+          <button class="btn" onclick="iniciarSesionPrestadorReal()">Iniciar sesión</button>
+        </div>
 
-      <div id="prestadorResultado" class="resultado" style="display:none;"></div>
+        <div id="prestador-registro" class="tab-panel">
+          <input id="nombrePrestador" placeholder="Nombre completo o del taller">
+          <input id="emailPrestador" placeholder="Email">
+          <input id="passPrestador" type="password" placeholder="Contraseña">
+          <select id="tipoPrestador">
+            <option>Taller</option>
+            <option>Grúa</option>
+          </select>
+          <input id="zonaPrestador" placeholder="Zona de cobertura">
+          <button class="btn" onclick="registrarPrestadorReal()">Registrarme como prestador</button>
+        </div>
+
+        <div id="prestadorResultado" class="resultado" style="display:none;"></div>
+      </div>
 
       <div id="prestadorPanel" style="display:none;">
+        <h3>¡Bienvenido!</h3>
+        <p>Tu sesión de prestador está activa.</p>
+        <div class="tarjetas" style="margin-bottom:10px;">
+          <div class="tarjeta" style="cursor:pointer;" onclick="mostrar('servicios')">🔧<br>Servicios</div>
+          <div class="tarjeta" style="cursor:pointer;" onclick="mostrar('pago')">💰<br>Pago</div>
+          <div class="tarjeta" style="cursor:pointer;" onclick="mostrar('calificacion')">⭐<br>Calificar</div>
+        </div>
+        <button class="btn" onclick="cerrarSesionPrestador()">Cerrar sesión</button>
+
         <h3 style="margin-top:20px;">📋 Ejemplo de pedido entrante</h3>
         <div class="resultado" id="pedido">
           Nuevo pedido:<br><br>
@@ -237,7 +264,19 @@ async function iniciarSesionUsuarioReal() {
   div.textContent = 'Iniciando sesión...';
 
   const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  div.textContent = error ? 'Error: ' + error.message : 'Sesión iniciada. ¡Bienvenido!';
+  if (error) {
+    div.textContent = 'Error: ' + error.message;
+    return;
+  }
+  document.getElementById('usuarioAuthBox').style.display = 'none';
+  document.getElementById('usuarioPanel').style.display = 'block';
+}
+
+async function cerrarSesionUsuario() {
+  await supabaseClient.auth.signOut();
+  document.getElementById('usuarioPanel').style.display = 'none';
+  document.getElementById('usuarioAuthBox').style.display = 'block';
+  document.getElementById('usuarioResultado').style.display = 'none';
 }
 
 async function registrarPrestadorReal() {
@@ -291,8 +330,15 @@ async function iniciarSesionPrestadorReal() {
     div.textContent = 'Error: ' + error.message;
     return;
   }
-  div.textContent = 'Sesión iniciada. ¡Bienvenido!';
+  document.getElementById('prestadorAuthBox').style.display = 'none';
   document.getElementById('prestadorPanel').style.display = 'block';
+}
+
+async function cerrarSesionPrestador() {
+  await supabaseClient.auth.signOut();
+  document.getElementById('prestadorPanel').style.display = 'none';
+  document.getElementById('prestadorAuthBox').style.display = 'block';
+  document.getElementById('prestadorResultado').style.display = 'none';
 }
 </script>
 </body>
