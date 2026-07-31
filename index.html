@@ -20,7 +20,6 @@
   <button onclick="mostrar('usuario')">Usuario</button>
   <button onclick="mostrar('diagnostico')">IA Mecánica</button>
   <button onclick="mostrar('servicios')">Servicios</button>
-  <button onclick="mostrar('mapa')">🗺️ Mapa</button>
   <button onclick="mostrar('prestador')">Prestadores</button>
   <button onclick="mostrar('pago')">Pago</button>
   <button onclick="mostrar('calificacion')">Calificar</button>
@@ -108,23 +107,10 @@
       <input id="ubicacion" placeholder="Ubicación del vehículo">
       <button class="btn" onclick="guardarPedidoReal()">Buscar ayuda</button>
       <div id="servicioResultado" class="resultado" style="display:none;"></div>
-      <h3>📍 Mapa demo</h3>
-      <div class="resultado">
-        🔴 Tu ubicación<br>
-        🟢 Taller Motoras a 2 km<br>
-        🟢 Mecánico disponible a 3 km<br>
-        🟢 Grúa disponible a 5 km
-      </div>
-    </div>
-  </section>
-
-  <section id="mapa">
-    <div class="card">
-      <h2>🗺️ Mapa Motoras</h2>
-      <p>Buscá mecánicos, talleres y grúas cerca tuyo.</p>
-      <button class="btn" onclick="obtenerUbicacion()">📍 Obtener mi ubicación</button>
-      <div id="ubicacionTexto" class="resultado">Esperando ubicación...</div>
-      <div id="mapaMotoras" style="height:500px; margin-top:15px; border-radius:12px;"></div>
+      <h3 style="margin-top:20px;">📍 Ubicación en el mapa</h3>
+      <button class="btn" onclick="obtenerUbicacion('mapaServicios','ubicacionServiciosTexto')">Ver mi ubicación</button>
+      <div id="ubicacionServiciosTexto" class="resultado">Esperando ubicación...</div>
+      <div id="mapaServicios" style="height:350px; margin-top:15px; border-radius:12px;"></div>
     </div>
   </section>
 
@@ -180,6 +166,11 @@
         </div>
         <button class="btn" id="btnAceptar" onclick="aceptarTrabajo()">Aceptar trabajo</button>
         <div id="trabajo" class="resultado" style="display:none;"></div>
+
+        <h3 style="margin-top:20px;">📍 Ubicación del pedido</h3>
+        <button class="btn" onclick="obtenerUbicacion('mapaPrestador','ubicacionPrestadorTexto')">Ver en el mapa</button>
+        <div id="ubicacionPrestadorTexto" class="resultado">Esperando ubicación...</div>
+        <div id="mapaPrestador" style="height:350px; margin-top:15px; border-radius:12px;"></div>
       </div>
     </div>
   </section>
@@ -216,4 +207,4 @@
 <script src="js/script.js"></script>
 <script src="js/app.js"></script>
 </body>
-          </html>
+</html>
