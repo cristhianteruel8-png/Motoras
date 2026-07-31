@@ -265,3 +265,30 @@ section {
 section.activo {
   display: block;
 }
+input[type="file"] {
+  padding: 10px;
+  color: var(--gris);
+  font-size: 13px;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+  background: var(--rojo);
+  color: #fff;
+  border: 0;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Oswald', Arial, sans-serif;
+  text-transform: uppercase;
+  font-size: 12px;
+  margin-right: 10px;
+}
+
+#estrellas {
+  font-size: 20px;
+}
+
+#estadoPedido {
+  color: var(--dorado);
+  font-weight: 600;
+      }
