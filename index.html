@@ -201,19 +201,32 @@ async function registrarUsuarioReal() {
   div.style.display = 'block';
   div.textContent = 'Creando cuenta...';
 
+  let userId = null;
   const { data, error } = await supabaseClient.auth.signUp({ email, password });
+
   if (error) {
-    div.textContent = 'Error: ' + error.message;
-    return;
+    if (error.message.includes('already registered') || error.message.includes('already exists')) {
+      const { data: dataLogin, error: errorLogin } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (errorLogin) {
+        div.textContent = 'Ese email ya tiene una cuenta. Ingresá la contraseña correcta de esa cuenta para sumarle el perfil de usuario.';
+        return;
+      }
+      userId = dataLogin.user.id;
+    } else {
+      div.textContent = 'Error: ' + error.message;
+      return;
+    }
+  } else {
+    userId = data.user.id;
   }
 
   const { error: errorPerfil } = await supabaseClient
     .from('perfiles_usuario')
-    .insert([{ id: data.user.id, nombre, auto, anio, motor }]);
+    .upsert([{ id: userId, nombre, auto, anio, motor }]);
 
   div.textContent = errorPerfil
-    ? 'Cuenta creada, pero hubo un error guardando el perfil: ' + errorPerfil.message
-    : 'Cuenta creada. Revisá tu email para confirmarla antes de iniciar sesión.';
+    ? 'Cuenta lista, pero hubo un error guardando el perfil: ' + errorPerfil.message
+    : 'Perfil de usuario guardado. Ya podés iniciar sesión.';
 }
 
 async function iniciarSesionUsuarioReal() {
@@ -238,19 +251,32 @@ async function registrarPrestadorReal() {
   div.style.display = 'block';
   div.textContent = 'Registrando...';
 
+  let userId = null;
   const { data, error } = await supabaseClient.auth.signUp({ email, password });
+
   if (error) {
-    div.textContent = 'Error: ' + error.message;
-    return;
+    if (error.message.includes('already registered') || error.message.includes('already exists')) {
+      const { data: dataLogin, error: errorLogin } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (errorLogin) {
+        div.textContent = 'Ese email ya tiene una cuenta. Ingresá la contraseña correcta de esa cuenta para sumarle el perfil de prestador.';
+        return;
+      }
+      userId = dataLogin.user.id;
+    } else {
+      div.textContent = 'Error: ' + error.message;
+      return;
+    }
+  } else {
+    userId = data.user.id;
   }
 
   const { error: errorPerfil } = await supabaseClient
     .from('perfiles_prestador')
-    .insert([{ id: data.user.id, nombre, tipo, zona }]);
+    .upsert([{ id: userId, nombre, tipo, zona }]);
 
   div.textContent = errorPerfil
-    ? 'Cuenta creada, pero hubo un error guardando el perfil: ' + errorPerfil.message
-    : 'Registro enviado. Revisá tu email para confirmarlo antes de iniciar sesión.';
+    ? 'Cuenta lista, pero hubo un error guardando el perfil: ' + errorPerfil.message
+    : 'Perfil de prestador guardado. Ya podés iniciar sesión.';
 }
 
 async function iniciarSesionPrestadorReal() {
@@ -270,4 +296,4 @@ async function iniciarSesionPrestadorReal() {
 }
 </script>
 </body>
-          </html>
+</html>
