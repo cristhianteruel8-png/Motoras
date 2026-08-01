@@ -156,16 +156,9 @@
         </div>
         <button class="btn" onclick="cerrarSesionPrestador()">Cerrar sesión</button>
 
-        <h3 style="margin-top:20px;">📋 Ejemplo de pedido entrante</h3>
-        <div class="resultado" id="pedido">
-          Nuevo pedido:<br><br>
-          Cliente: Cristian<br>
-          Vehículo: Chevrolet Zafira 2.0<br>
-          Problema: Se apaga al sacar la marcha<br><br>
-          Estado: <span id="estadoPedido">Esperando aceptación</span>
-        </div>
-        <button class="btn" id="btnAceptar" onclick="aceptarTrabajo()">Aceptar trabajo</button>
-        <div id="trabajo" class="resultado" style="display:none;"></div>
+        <h3 style="margin-top:20px;">📋 Pedidos pendientes</h3>
+        <button class="btn" onclick="cargarPedidosReal()">Actualizar pedidos</button>
+        <div id="listaPedidos"></div>
 
         <h3 style="margin-top:20px;">📍 Ubicación del pedido</h3>
         <button class="btn" onclick="obtenerUbicacion('mapaPrestador','ubicacionPrestadorTexto')">Ver en el mapa</button>
@@ -207,4 +200,4 @@
 <script src="js/script.js"></script>
 <script src="js/app.js"></script>
 </body>
-</html>
+  </html>
