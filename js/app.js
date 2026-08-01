@@ -71,7 +71,11 @@ async function iniciarSesionUsuarioReal() {
 }
 
 async function cerrarSesionUsuario() {
-  await supabaseClient.auth.signOut();
+  try {
+    await supabaseClient.auth.signOut();
+  } catch (e) {
+    console.error(e);
+  }
   document.getElementById('usuarioPanel').style.display = 'none';
   document.getElementById('usuarioAuthBox').style.display = 'block';
   document.getElementById('usuarioResultado').style.display = 'none';
@@ -135,7 +139,11 @@ async function iniciarSesionPrestadorReal() {
 }
 
 async function cerrarSesionPrestador() {
-  await supabaseClient.auth.signOut();
+  try {
+    await supabaseClient.auth.signOut();
+  } catch (e) {
+    console.error(e);
+  }
   document.getElementById('prestadorPanel').style.display = 'none';
   document.getElementById('prestadorAuthBox').style.display = 'block';
   document.getElementById('prestadorResultado').style.display = 'none';
@@ -243,6 +251,8 @@ function obtenerUbicacion(containerId, textId) {
     return;
   }
 
+  document.getElementById(textId).innerHTML = 'Buscando ubicación...';
+
   navigator.geolocation.getCurrentPosition(function (pos) {
     const lat = pos.coords.latitude;
     const lon = pos.coords.longitude;
@@ -264,6 +274,11 @@ function obtenerUbicacion(containerId, textId) {
       }
     }
 
+    // Fuerza a Leaflet a recalcular el tamaño del contenedor (evita mapas en blanco)
+    setTimeout(function () {
+      mapas[containerId].map.invalidateSize();
+    }, 100);
+
     mapas[containerId].marker = L.marker([lat, lon])
       .addTo(mapas[containerId].map)
       .bindPopup('📍 Tu ubicación')
@@ -273,5 +288,8 @@ function obtenerUbicacion(containerId, textId) {
     L.marker([lat + 0.01, lon + 0.005]).addTo(mapas[containerId].map).bindPopup('🔧 Mecánico Motoras');
     L.marker([lat - 0.008, lon - 0.004]).addTo(mapas[containerId].map).bindPopup('🚚 Grúa');
     L.marker([lat + 0.006, lon - 0.01]).addTo(mapas[containerId].map).bindPopup('🏢 Taller');
+  }, function (err) {
+    document.getElementById(textId).innerHTML =
+      'No se pudo obtener la ubicación: ' + err.message + '. Revisá que el navegador tenga permiso de ubicación activado para este sitio.';
   });
 }
