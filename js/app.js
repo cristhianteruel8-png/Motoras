@@ -131,6 +131,7 @@ async function iniciarSesionPrestadorReal() {
   }
   document.getElementById('prestadorAuthBox').style.display = 'none';
   document.getElementById('prestadorPanel').style.display = 'block';
+  cargarPedidosReal();
 }
 
 async function cerrarSesionPrestador() {
@@ -184,6 +185,53 @@ async function guardarPedidoReal() {
   div.textContent = error
     ? 'Error al guardar: ' + error.message
     : 'Pedido enviado. Un prestador lo va a ver pronto.';
+}
+
+/* ---------- PEDIDOS DEL PRESTADOR ---------- */
+async function cargarPedidosReal() {
+  const div = document.getElementById('listaPedidos');
+  div.innerHTML = '<div class="resultado">Cargando pedidos...</div>';
+
+  const { data, error } = await supabaseClient
+    .from('pedidos')
+    .select('*')
+    .eq('estado', 'Esperando aceptación')
+    .order('creado_en', { ascending: false });
+
+  if (error) {
+    div.innerHTML = '<div class="resultado error">Error: ' + error.message + '</div>';
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    div.innerHTML = '<div class="resultado">No hay pedidos pendientes por ahora.</div>';
+    return;
+  }
+
+  div.innerHTML = data.map(function (p) {
+    return '<div class="resultado">' +
+      'Servicio: ' + p.tipo_servicio + '<br>' +
+      'Ubicación: ' + (p.ubicacion || 'No especificada') + '<br>' +
+      'Estado: ' + p.estado +
+      '<button class="btn" onclick="aceptarPedidoReal(\'' + p.id + '\')">Aceptar trabajo</button>' +
+      '</div>';
+  }).join('');
+}
+
+async function aceptarPedidoReal(pedidoId) {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) return;
+
+  const { error } = await supabaseClient
+    .from('pedidos')
+    .update({ estado: 'Aceptado', prestador_id: user.id })
+    .eq('id', pedidoId);
+
+  if (error) {
+    alert('Error al aceptar: ' + error.message);
+    return;
+  }
+  cargarPedidosReal();
 }
 
 /* ---------- MAPA ---------- */
