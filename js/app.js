@@ -24,6 +24,18 @@ const supabaseClient = supabase.createClient(
   });
 })();
 
+window.addEventListener('DOMContentLoaded', async function () {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) return;
+
+  document.getElementById('usuarioAuthBox').style.display = 'none';
+  document.getElementById('usuarioPanel').style.display = 'block';
+
+  document.getElementById('prestadorAuthBox').style.display = 'none';
+  document.getElementById('prestadorPanel').style.display = 'block';
+  cargarPedidosReal();
+});
+
 /* ---------- PESTAÑAS LOGIN / REGISTRO ---------- */
 function cambiarTab(seccion, tab, boton) {
   document.getElementById(seccion + '-login').classList.toggle('activo-tab-panel', tab === 'login');
@@ -428,4 +440,4 @@ function obtenerUbicacion(containerId, textId) {
     document.getElementById(textId).innerHTML =
       'No se pudo obtener la ubicación: ' + err.message + '. Revisá que el navegador tenga permiso de ubicación activado para este sitio.';
   });
-                      }
+}
