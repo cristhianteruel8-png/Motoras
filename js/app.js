@@ -312,6 +312,30 @@ async function aceptarPedidoReal(pedidoId) {
   cargarPedidosReal();
 }
 
+/* ---------- CALIFICACIÓN ---------- */
+async function guardarCalificacionReal() {
+  const valorSelect = document.getElementById('estrellas').value;
+  const estrellas = (valorSelect.match(/⭐/g) || []).length;
+  const div = document.getElementById('calificacionResultado');
+  div.style.display = 'block';
+
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) {
+    div.textContent = 'Iniciá sesión como usuario primero para calificar.';
+    return;
+  }
+
+  div.textContent = 'Enviando calificación...';
+
+  const { error } = await supabaseClient
+    .from('calificaciones')
+    .insert([{ usuario_id: user.id, estrellas }]);
+
+  div.textContent = error
+    ? 'Error al guardar: ' + error.message
+    : '¡Gracias por tu calificación!';
+}
+
 /* ---------- MAPA DEL PRESTADOR ---------- */
 const mapas = {};
 
