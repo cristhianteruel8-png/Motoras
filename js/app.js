@@ -178,6 +178,11 @@ async function guardarPedidoReal() {
   const div = document.getElementById('servicioResultado');
   div.style.display = 'block';
 
+  if (!ubicacion || pedidoLat === null) {
+    div.textContent = 'Primero elegí tu ubicación con el botón o tocando el mapa.';
+    return;
+  }
+
   const { data: { user } } = await supabaseClient.auth.getUser();
   if (!user) {
     div.textContent = 'Iniciá sesión como usuario primero para pedir ayuda.';
@@ -188,11 +193,76 @@ async function guardarPedidoReal() {
 
   const { error } = await supabaseClient
     .from('pedidos')
-    .insert([{ usuario_id: user.id, tipo_servicio: tipoServicio, ubicacion }]);
+    .insert([{ usuario_id: user.id, tipo_servicio: tipoServicio, ubicacion, lat: pedidoLat, lon: pedidoLon }]);
 
   div.textContent = error
     ? 'Error al guardar: ' + error.message
     : 'Pedido enviado. Un prestador lo va a ver pronto.';
+}
+
+/* ---------- UBICACIÓN DEL PEDIDO (mapa / GPS, sin escribir a mano) ---------- */
+let mapaPedido = null;
+let marcadorPedido = null;
+let pedidoLat = null;
+let pedidoLon = null;
+
+function iniciarMapaPedido() {
+  if (mapaPedido) return;
+  mapaPedido = L.map('mapaServicios').setView([-31.4, -64.2], 5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).addTo(mapaPedido);
+  mapaPedido.on('click', function (e) {
+    colocarPedidoEnMapa(e.latlng.lat, e.latlng.lng);
+  });
+}
+
+function usarMiUbicacionPedido() {
+  if (!navigator.geolocation) {
+    alert('Tu navegador no soporta GPS.');
+    return;
+  }
+  document.getElementById('ubicacionServiciosTexto').innerHTML = 'Buscando tu ubicación...';
+  navigator.geolocation.getCurrentPosition(function (pos) {
+    colocarPedidoEnMapa(pos.coords.latitude, pos.coords.longitude);
+  }, function (err) {
+    document.getElementById('ubicacionServiciosTexto').innerHTML =
+      'No se pudo obtener tu ubicación: ' + err.message + '. Podés tocar el mapa para marcarla manualmente.';
+    iniciarMapaPedido();
+  });
+}
+
+async function colocarPedidoEnMapa(lat, lon) {
+  iniciarMapaPedido();
+  mapaPedido.setView([lat, lon], 15);
+  setTimeout(function () { mapaPedido.invalidateSize(); }, 100);
+
+  if (marcadorPedido) {
+    marcadorPedido.setLatLng([lat, lon]);
+  } else {
+    marcadorPedido = L.marker([lat, lon], { draggable: true }).addTo(mapaPedido);
+    marcadorPedido.on('dragend', function () {
+      const pos = marcadorPedido.getLatLng();
+      colocarPedidoEnMapa(pos.lat, pos.lng);
+    });
+  }
+
+  pedidoLat = lat;
+  pedidoLon = lon;
+  document.getElementById('ubicacionServiciosTexto').innerHTML = 'Buscando la dirección...';
+
+  try {
+    const resp = await fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lon);
+    const data = await resp.json();
+    const direccion = data.display_name || (lat.toFixed(5) + ', ' + lon.toFixed(5));
+    document.getElementById('ubicacion').value = direccion;
+    document.getElementById('ubicacionServiciosTexto').innerHTML = '📍 ' + direccion;
+  } catch (e) {
+    const coordsTxt = lat.toFixed(5) + ', ' + lon.toFixed(5);
+    document.getElementById('ubicacion').value = coordsTxt;
+    document.getElementById('ubicacionServiciosTexto').innerHTML = '📍 ' + coordsTxt;
+  }
 }
 
 /* ---------- PEDIDOS DEL PRESTADOR ---------- */
@@ -242,7 +312,7 @@ async function aceptarPedidoReal(pedidoId) {
   cargarPedidosReal();
 }
 
-/* ---------- MAPA ---------- */
+/* ---------- MAPA DEL PRESTADOR ---------- */
 const mapas = {};
 
 function obtenerUbicacion(containerId, textId) {
