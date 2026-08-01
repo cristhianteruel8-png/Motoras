@@ -3,6 +3,27 @@ const supabaseClient = supabase.createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplaWRjbHlsbnNwdm1xZm5vanRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU0NTMxOTIsImV4cCI6MjEwMTAyOTE5Mn0.r-0PBjCs6SQRYXtnZjzyOZbzHgPlzBt-pvDq6CKjtqI'
 );
 
+(function mostrarResultadoPago() {
+  const params = new URLSearchParams(window.location.search);
+  const pago = params.get('pago');
+  if (!pago) return;
+
+  const mensajes = {
+    exito: '✅ ¡Pago aprobado! Gracias por confiar en Motoras.',
+    fallo: '❌ El pago no se pudo procesar. Probá de nuevo.',
+    pendiente: '⏳ Tu pago está pendiente de confirmación.'
+  };
+
+  window.addEventListener('DOMContentLoaded', function () {
+    mostrar('pago');
+    const div = document.getElementById('pagoResultado');
+    if (div) {
+      div.style.display = 'block';
+      div.textContent = mensajes[pago] || '';
+    }
+  });
+})();
+
 /* ---------- PESTAÑAS LOGIN / REGISTRO ---------- */
 function cambiarTab(seccion, tab, boton) {
   document.getElementById(seccion + '-login').classList.toggle('activo-tab-panel', tab === 'login');
@@ -312,6 +333,27 @@ async function aceptarPedidoReal(pedidoId) {
   cargarPedidosReal();
 }
 
+/* ---------- PAGO (Mercado Pago) ---------- */
+async function pagarConMercadoPago() {
+  const div = document.getElementById('pagoResultado');
+  div.style.display = 'block';
+  div.textContent = 'Generando pago...';
+
+  try {
+    const resp = await fetch('/api/crear-pago', { method: 'POST' });
+    const data = await resp.json();
+
+    if (!resp.ok || !data.init_point) {
+      div.textContent = 'Error al generar el pago: ' + (data.error || 'intentá de nuevo.');
+      return;
+    }
+
+    window.location.href = data.init_point;
+  } catch (e) {
+    div.textContent = 'Error al generar el pago: ' + e.message;
+  }
+}
+
 /* ---------- CALIFICACIÓN ---------- */
 async function guardarCalificacionReal() {
   const valorSelect = document.getElementById('estrellas').value;
@@ -386,4 +428,4 @@ function obtenerUbicacion(containerId, textId) {
     document.getElementById(textId).innerHTML =
       'No se pudo obtener la ubicación: ' + err.message + '. Revisá que el navegador tenga permiso de ubicación activado para este sitio.';
   });
-}
+                      }
