@@ -19,34 +19,29 @@ export default async function handler(req, res) {
   }
 
   try {
+    const { orderID } = req.query;
     const accessToken = await obtenerAccessToken();
 
-    const orderResp = await fetch('https://api-m.sandbox.paypal.com/v2/checkout/orders', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken
-      },
-      body: JSON.stringify({
-        intent: 'CAPTURE',
-        purchase_units: [
-          {
-            amount: { currency_code: 'USD', value: '3.00' },
-            description: 'Diagnóstico Motoras IA'
-          }
-        ]
-      })
-    });
+    const captureResp = await fetch(
+      'https://api-m.sandbox.paypal.com/v2/checkout/orders/' + orderID + '/capture',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + accessToken
+        }
+      }
+    );
 
-    const orderData = await orderResp.json();
+    const captureData = await captureResp.json();
 
-    if (!orderResp.ok) {
-      res.status(500).json({ error: orderData.message || 'Error creando la orden' });
+    if (!captureResp.ok) {
+      res.status(500).json({ error: captureData.message || 'Error capturando el pago' });
       return;
     }
 
-    res.status(200).json({ id: orderData.id });
+    res.status(200).json({ status: captureData.status });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+  }
