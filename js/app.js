@@ -380,10 +380,8 @@ if (window.paypal) {
         });
     },
     onApprove: function (data) {
-      return fetch('/api/capturar-orden-paypal', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderID: data.orderID })
+      return fetch('/api/capturar-orden-paypal?orderID=' + data.orderID, {
+        method: 'POST'
       })
         .then(function (res) { return res.json(); })
         .then(function () {
