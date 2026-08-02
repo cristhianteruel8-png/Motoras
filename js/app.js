@@ -372,7 +372,12 @@ if (window.paypal) {
     createOrder: function () {
       return fetch('/api/crear-orden-paypal', { method: 'POST' })
         .then(function (res) { return res.json(); })
-        .then(function (data) { return data.id; });
+        .then(function (data) {
+          if (!data.id) {
+            throw new Error(data.error || 'No se pudo crear la orden');
+          }
+          return data.id;
+        });
     },
     onApprove: function (data) {
       return fetch('/api/capturar-orden-paypal', {
