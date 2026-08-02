@@ -366,6 +366,35 @@ async function pagarConMercadoPago() {
   }
 }
 
+/* ---------- PAGO (PayPal) ---------- */
+if (window.paypal) {
+  paypal.Buttons({
+    createOrder: function () {
+      return fetch('/api/crear-orden-paypal', { method: 'POST' })
+        .then(function (res) { return res.json(); })
+        .then(function (data) { return data.id; });
+    },
+    onApprove: function (data) {
+      return fetch('/api/capturar-orden-paypal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderID: data.orderID })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function () {
+          const div = document.getElementById('pagoResultado');
+          div.style.display = 'block';
+          div.textContent = '✅ ¡Pago con PayPal aprobado! Gracias por confiar en Motoras.';
+        });
+    },
+    onError: function (err) {
+      const div = document.getElementById('pagoResultado');
+      div.style.display = 'block';
+      div.textContent = 'Error con PayPal: ' + err;
+    }
+  }).render('#paypal-button-container');
+}
+
 /* ---------- CALIFICACIÓN ---------- */
 async function guardarCalificacionReal() {
   const valorSelect = document.getElementById('estrellas').value;
@@ -390,7 +419,6 @@ async function guardarCalificacionReal() {
     : '¡Gracias por tu calificación!';
 }
 
-/* ---------- MAPA DEL PRESTADOR ---------- */
 const mapas = {};
 
 function obtenerUbicacion(containerId, textId) {
