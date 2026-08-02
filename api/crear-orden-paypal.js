@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     const orderData = await orderResp.json();
 
     if (!orderResp.ok) {
-      res.status(500).json({ error: orderData.message || 'Error creando la orden' });
+      res.status(500).json({ error: JSON.stringify(orderData) });
       return;
     }
 
@@ -49,4 +49,4 @@ export default async function handler(req, res) {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-    }
+                           }
