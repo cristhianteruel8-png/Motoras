@@ -23,18 +23,7 @@
   <button onclick="mostrar('calificacion')">Calificar</button>
 </nav>
 <main>
-  <section id="inicio" class="activo">
-    <div class="card">
-      <h2>Bienvenido a Motoras</h2>
-      <p>La plataforma que ayuda al conductor a resolver problemas mecánicos y conecta con servicios.</p>
-      <div class="tarjetas">
-        <div class="tarjeta">🤖<br>IA Diagnóstico</div>
-        <div class="tarjeta">🔧<br>Mecánicos</div>
-        <div class="tarjeta">🚚<br>Grúas</div>
-      </div>
-    </div>
-  </section>
-
+  <section id="inicio" class="activo"><div class="card"><h2>Bienvenido a Motoras</h2></div></section>
   <section id="usuario">
     <div class="card">
       <h2>Mi cuenta</h2>
@@ -60,106 +49,19 @@
         </div>
         <div id="usuarioResultado" class="resultado" style="display:none;"></div>
       </div>
-      <div id="usuarioPanel" style="display:none;">
-        <h3>¡Bienvenido!</h3>
-        <p>Tu sesión de usuario está activa.</p>
-        <button class="btn" onclick="cerrarSesionUsuario()">Cerrar sesión</button>
-      </div>
+      <div id="usuarioPanel" style="display:none;"><h3>¡Bienvenido!</h3><button class="btn" onclick="cerrarSesionUsuario()">Cerrar sesión</button></div>
     </div>
   </section>
-
-  <section id="diagnostico">
-    <div class="card">
-      <h2>🤖 Motoras IA</h2>
-      <textarea id="problema" placeholder="Ej: se apaga al sacar la marcha"></textarea>
-      <input id="codigo" placeholder="Código OBD2 (opcional)">
-      <label>Foto (opcional)</label>
-      <input id="fotoFalla" type="file" accept="image/*">
-      <label>Audio (opcional)</label>
-      <input id="audioFalla" type="file" accept="audio/*">
-      <button class="btn" id="btnDiagnosticar" onclick="guardarDiagnosticoReal()">Analizar falla</button>
-      <div id="respuestaIA" class="resultado">Esperando diagnóstico...</div>
-    </div>
-  </section>
-
-  <section id="servicios">
-    <div class="card">
-      <h2>🔧 Solicitar asistencia</h2>
-      <select id="tipoServicio"><option>Mecánico móvil</option><option>Grúa</option><option>Taller</option></select>
-      <input id="ubicacion" placeholder="Usá el botón o el mapa" readonly>
-      <button class="btn" onclick="usarMiUbicacionPedido()">📍 Usar mi ubicación</button>
-      <button class="btn" onclick="guardarPedidoReal()">Buscar ayuda</button>
-      <div id="servicioResultado" class="resultado" style="display:none;"></div>
-      <div id="ubicacionServiciosTexto" class="resultado">Todavía no elegiste ubicación.</div>
-      <div id="mapaServicios" style="height:350px; margin-top:15px; border-radius:12px;"></div>
-    </div>
-  </section>
-
-  <section id="prestador">
-    <div class="card">
-      <h2>🛠 Cuenta de prestador</h2>
-      <div id="prestadorAuthBox">
-        <div class="tabs">
-          <button class="tab-btn activo-tab" onclick="cambiarTab('prestador','login',this)">Iniciar sesión</button>
-          <button class="tab-btn" onclick="cambiarTab('prestador','registro',this)">Registrarse</button>
-        </div>
-        <div id="prestador-login" class="tab-panel activo-tab-panel">
-          <input id="loginEmailPrestador" type="email" placeholder="Email">
-          <input id="loginPassPrestador" type="password" placeholder="Contraseña">
-          <button class="btn" onclick="iniciarSesionPrestadorReal()">Iniciar sesión</button>
-        </div>
-        <div id="prestador-registro" class="tab-panel">
-          <input id="nombrePrestador" placeholder="Nombre del taller">
-          <input id="emailPrestador" type="email" placeholder="Email">
-          <input id="passPrestador" type="password" placeholder="Contraseña">
-          <select id="tipoPrestador"><option>Taller</option><option>Grúa</option><option>Mecánico móvil</option></select>
-          <input id="zonaPrestador" placeholder="Zona de cobertura">
-          <button class="btn" onclick="registrarPrestadorReal()">Registrarme</button>
-        </div>
-        <div id="prestadorResultado" class="resultado" style="display:none;"></div>
-      </div>
-      <div id="prestadorPanel" style="display:none;">
-        <h3>¡Bienvenido prestador!</h3>
-        <button class="btn" onclick="cargarPedidosReal()">Actualizar pedidos</button>
-        <div id="listaPedidos"></div>
-        <div id="ubicacionPrestadorTexto" class="resultado">Esperando ubicación...</div>
-        <div id="mapaPrestador" style="height:350px; margin-top:15px; border-radius:12px;"></div>
-        <button class="btn" onclick="cerrarSesionPrestador()">Cerrar sesión</button>
-      </div>
-    </div>
-  </section>
-
-  <section id="pago">
-    <div class="card">
-      <h2>💰 Motoras Pago</h2>
-      <h3>$3 USD / $3000 ARS</h3>
-      <button class="btn" onclick="pagarConMercadoPago()">Pagar con Mercado Pago</button>
-      <div id="pagoResultado" class="resultado" style="display:none;"></div>
-      <h3 style="margin-top:20px;">O PayPal / tarjeta</h3>
-      <div id="paypal-button-container"></div>
-    </div>
-  </section>
-
-  <section id="calificacion">
-    <div class="card">
-      <h2>⭐ Calificar</h2>
-      <select id="estrellas"><option>⭐⭐⭐⭐⭐</option><option>⭐⭐⭐⭐</option><option>⭐⭐⭐</option></select>
-      <button class="btn" onclick="guardarCalificacionReal()">Enviar</button>
-      <div id="calificacionResultado" class="resultado" style="display:none;"></div>
-    </div>
-  </section>
+  <section id="diagnostico"><div class="card"><h2>🤖 Motoras IA</h2><textarea id="problema"></textarea><input id="codigo" placeholder="Código OBD2"><button class="btn" onclick="guardarDiagnosticoReal()">Analizar</button><div id="respuestaIA" class="resultado"></div></div></section>
+  <section id="servicios"><div class="card"><h2>🔧 Solicitar asistencia</h2><select id="tipoServicio"><option>Mecánico móvil</option><option>Grúa</option><option>Taller</option></select><input id="ubicacion" readonly><button class="btn" onclick="usarMiUbicacionPedido()">📍 Usar mi ubicación</button><button class="btn" onclick="guardarPedidoReal()">Buscar ayuda</button><div id="servicioResultado" class="resultado" style="display:none;"></div><div id="ubicacionServiciosTexto" class="resultado"></div><div id="mapaServicios" style="height:350px;"></div></div></section>
+  <section id="prestador"><div class="card"><h2>🛠 Prestador</h2><div id="prestadorAuthBox"><div id="prestador-login" class="tab-panel activo-tab-panel"><input id="loginEmailPrestador"><input id="loginPassPrestador" type="password"><button class="btn" onclick="iniciarSesionPrestadorReal()">Entrar</button></div><div id="prestador-registro" class="tab-panel"><input id="nombrePrestador"><input id="emailPrestador"><input id="passPrestador" type="password"><select id="tipoPrestador"><option>Taller</option><option>Grúa</option><option>Mecánico móvil</option></select><input id="zonaPrestador"><button class="btn" onclick="registrarPrestadorReal()">Registrarme</button></div><div id="prestadorResultado" class="resultado" style="display:none;"></div></div><div id="prestadorPanel" style="display:none;"><button class="btn" onclick="cargarPedidosReal()">Actualizar pedidos</button><div id="listaPedidos"></div><button class="btn" onclick="cerrarSesionPrestador()">Cerrar sesión</button></div></div></section>
+  <section id="pago"><div class="card"><h2>💰 Pago</h2><button class="btn" onclick="pagarConMercadoPago()">Mercado Pago</button><div id="pagoResultado" class="resultado" style="display:none;"></div><div id="paypal-button-container"></div></div></section>
+  <section id="calificacion"><div class="card"><h2>⭐ Calificar</h2><select id="estrellas"><option>⭐⭐⭐⭐⭐</option></select><button class="btn" onclick="guardarCalificacionReal()">Enviar</button><div id="calificacionResultado" class="resultado" style="display:none;"></div></div></section>
 </main>
-<footer>Motoras © 2026 - Corregida</footer>
-
+<footer>Motoras © 2026</footer>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script type="module" src="js/config.js"></script>
 <script type="module" src="js/app.js"></script>
-<script type="module">
-import { CONFIG } from './js/config.js';
-const s = document.createElement('script');
-s.src = `https://www.paypal.com/sdk/js?client-id=${CONFIG.PAYPAL_CLIENT_ID}&currency=USD`;
-document.head.appendChild(s);
-</script>
 </body>
-            </html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </html>
