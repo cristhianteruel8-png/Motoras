@@ -1,474 +1,187 @@
-const supabaseClient = supabase.createClient(
-  'https://zeidclylnspvmqfnojtq.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplaWRjbHlsbnNwdm1xZm5vanRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU0NTMxOTIsImV4cCI6MjEwMTAyOTE5Mn0.r-0PBjCs6SQRYXtnZjzyOZbzHgPlzBt-pvDq6CKjtqI'
-);
+import { CONFIG } from "./config.js";
+const supabaseClient = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
 
-(function mostrarResultadoPago() {
-  const params = new URLSearchParams(window.location.search);
-  const pago = params.get('pago');
-  if (!pago) return;
+window.mostrar = function(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('activo'));
+  document.getElementById(id).classList.add('activo');
+  setTimeout(() => {
+    if (window.mapaPedido) window.mapaPedido.invalidateSize();
+    if (window.mapas) Object.values(window.mapas).forEach(m=>m.map.invalidateSize());
+  }, 200);
+};
 
-  const mensajes = {
-    exito: '✅ ¡Pago aprobado! Gracias por confiar en Motoras.',
-    fallo: '❌ El pago no se pudo procesar. Probá de nuevo.',
-    pendiente: '⏳ Tu pago está pendiente de confirmación.'
-  };
+function validarEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)}
+function mostrarResultado(el,txt,err=false){el.style.display='block';el.textContent=txt;el.classList.toggle('error',err);}
 
-  window.addEventListener('DOMContentLoaded', function () {
-    mostrar('pago');
-    const div = document.getElementById('pagoResultado');
-    if (div) {
-      div.style.display = 'block';
-      div.textContent = mensajes[pago] || '';
-    }
-  });
-})();
+window.cambiarTab = function(sec,tab,btn){
+  document.getElementById(sec+'-login').classList.toggle('activo-tab-panel',tab==='login');
+  document.getElementById(sec+'-registro').classList.toggle('activo-tab-panel',tab==='registro');
+  document.querySelectorAll('#'+sec+'.tab-btn').forEach(b=>b.classList.remove('activo-tab'));
+  btn.classList.add('activo-tab');
+};
 
-window.addEventListener('DOMContentLoaded', async function () {
+window.addEventListener('DOMContentLoaded', async () => {
   const { data: { user } } = await supabaseClient.auth.getUser();
-  if (!user) return;
-
-  document.getElementById('usuarioAuthBox').style.display = 'none';
-  document.getElementById('usuarioPanel').style.display = 'block';
-
-  document.getElementById('prestadorAuthBox').style.display = 'none';
-  document.getElementById('prestadorPanel').style.display = 'block';
-  cargarPedidosReal();
+  if(!user) return;
+  const { data: pu } = await supabaseClient.from('perfiles_usuario').select('id').eq('id',user.id).maybeSingle();
+  const { data: pp } = await supabaseClient.from('perfiles_prestador').select('id').eq('id',user.id).maybeSingle();
+  if(pu){document.getElementById('usuarioAuthBox').style.display='none';document.getElementById('usuarioPanel').style.display='block';}
+  if(pp){document.getElementById('prestadorAuthBox').style.display='none';document.getElementById('prestadorPanel').style.display='block';cargarPedidosReal();}
 });
 
-/* ---------- PESTAÑAS LOGIN / REGISTRO ---------- */
-function cambiarTab(seccion, tab, boton) {
-  document.getElementById(seccion + '-login').classList.toggle('activo-tab-panel', tab === 'login');
-  document.getElementById(seccion + '-registro').classList.toggle('activo-tab-panel', tab === 'registro');
-  document.querySelectorAll('#' + seccion + ' .tab-btn').forEach(function (b) {
-    b.classList.remove('activo-tab');
+window.registrarUsuarioReal = async function(){
+  const nombre=document.getElementById('nombre').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const pass=document.getElementById('passUsuario').value;
+  const auto=document.getElementById('auto').value.trim();
+  const anio=document.getElementById('anio').value.trim();
+  const motor=document.getElementById('motor').value.trim();
+  const div=document.getElementById('usuarioResultado');
+  if(!nombre||!validarEmail(email)||pass.length<6){mostrarResultado(div,'Completá nombre, email válido y pass +6',true);return;}
+  div.textContent='Creando...';div.style.display='block';
+  const {data,error}=await supabaseClient.auth.signUp({email,password:pass});
+  let userId=data?.user?.id;
+  if(error&&error.message.toLowerCase().includes('already')){
+    const {data:dl,error:el}=await supabaseClient.auth.signInWithPassword({email,password:pass});
+    if(el){mostrarResultado(div,'Email ya existe, usá su contraseña',true);return;}
+    userId=dl.user.id;
+  } else if(error){mostrarResultado(div,error.message,true);return;}
+  if(!userId){mostrarResultado(div,'Confirmá tu email');return;}
+  const {error:ep}=await supabaseClient.from('perfiles_usuario').upsert([{id:userId,nombre,auto,anio,motor}]);
+  mostrarResultado(div,ep?'Error perfil: '+ep.message:'¡Cuenta creada! Iniciá sesión',!!ep);
+};
+
+window.iniciarSesionUsuarioReal = async function(){
+  const email=document.getElementById('loginEmailUsuario').value.trim();
+  const pass=document.getElementById('loginPassUsuario').value;
+  const div=document.getElementById('usuarioResultado');div.style.display='block';div.textContent='Entrando...';
+  const {error}=await supabaseClient.auth.signInWithPassword({email,password:pass});
+  if(error){mostrarResultado(div,error.message,true);return;}
+  document.getElementById('usuarioAuthBox').style.display='none';document.getElementById('usuarioPanel').style.display='block';
+};
+
+window.cerrarSesionUsuario = async function(){await supabaseClient.auth.signOut();location.reload();};
+
+window.registrarPrestadorReal = async function(){
+  const nombre=document.getElementById('nombrePrestador').value.trim();
+  const email=document.getElementById('emailPrestador').value.trim();
+  const pass=document.getElementById('passPrestador').value;
+  const tipo=document.getElementById('tipoPrestador').value;
+  const zona=document.getElementById('zonaPrestador').value.trim();
+  const div=document.getElementById('prestadorResultado');div.style.display='block';
+  if(!nombre||!validarEmail(email)||pass.length<6){mostrarResultado(div,'Datos inválidos',true);return;}
+  div.textContent='Registrando...';
+  const {data,error}=await supabaseClient.auth.signUp({email,password:pass});
+  let userId=data?.user?.id;
+  if(error&&error.message.toLowerCase().includes('already')){
+    const {data:dl,error:el}=await supabaseClient.auth.signInWithPassword({email,password:pass});
+    if(el){mostrarResultado(div,'Email ya existe',true);return;}userId=dl.user.id;
+  } else if(error){mostrarResultado(div,error.message,true);return;}
+  if(!userId){mostrarResultado(div,'Confirmá tu email');return;}
+  const {error:ep}=await supabaseClient.from('perfiles_prestador').upsert([{id:userId,nombre,tipo,zona}]);
+  mostrarResultado(div,ep?'Error: '+ep.message:'¡Prestador registrado!',!!ep);
+};
+
+window.iniciarSesionPrestadorReal = async function(){
+  const email=document.getElementById('loginEmailPrestador').value.trim();
+  const pass=document.getElementById('loginPassPrestador').value;
+  const div=document.getElementById('prestadorResultado');div.textContent='Entrando...';div.style.display='block';
+  const {error}=await supabaseClient.auth.signInWithPassword({email,password:pass});
+  if(error){mostrarResultado(div,error.message,true);return;}
+  document.getElementById('prestadorAuthBox').style.display='none';document.getElementById('prestadorPanel').style.display='block';cargarPedidosReal();
+};
+
+window.cerrarSesionPrestador = async function(){await supabaseClient.auth.signOut();location.reload();};
+
+window.guardarDiagnosticoReal = async function(){
+  const problema=document.getElementById('problema').value.trim();
+  const codigo=document.getElementById('codigo').value.trim();
+  const div=document.getElementById('respuestaIA');
+  if(!problema){div.textContent='Describí la falla';div.classList.add('error');return;}
+  const {data:{user}}=await supabaseClient.auth.getUser();
+  if(!user){div.textContent='Iniciá sesión';div.classList.add('error');return;}
+  div.textContent='Guardando...';div.classList.remove('error');
+  const {error}=await supabaseClient.from('diagnosticos').insert([{usuario_id:user.id,problema,codigo}]);
+  div.textContent=error?'Error: '+error.message:'Diagnóstico guardado, IA lo analizará pronto.';
+};
+
+let mapaPedido=null, marcadorPedido=null, pedidoLat=null, pedidoLon=null;
+window.mapas={};
+window.iniciarMapaPedido=function(){
+  if(mapaPedido){setTimeout(()=>mapaPedido.invalidateSize(),100);return;}
+  mapaPedido=L.map('mapaServicios').setView([-31.4,-64.2],5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(mapaPedido);
+  mapaPedido.on('click',e=>colocarPedidoEnMapa(e.latlng.lat,e.latlng.lng));
+  setTimeout(()=>mapaPedido.invalidateSize(),200);
+};
+window.usarMiUbicacionPedido=function(){
+  document.getElementById('ubicacionServiciosTexto').textContent='Buscando...';iniciarMapaPedido();
+  navigator.geolocation.getCurrentPosition(p=>colocarPedidoEnMapa(p.coords.latitude,p.coords.longitude),e=>{document.getElementById('ubicacionServiciosTexto').textContent='Error: '+e.message});
+};
+window.colocarPedidoEnMapa=async function(lat,lon){
+  iniciarMapaPedido();pedidoLat=lat;pedidoLon=lon;
+  if(marcadorPedido) mapaPedido.removeLayer(marcadorPedido);
+  marcadorPedido=L.marker([lat,lon]).addTo(mapaPedido).bindPopup('Tu vehículo').openPopup();
+  mapaPedido.setView([lat,lon],14);
+  document.getElementById('ubicacion').value=`${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+  document.getElementById('ubicacionServiciosTexto').textContent=`📍 ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+  try{
+    const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+    const d=await r.json(); if(d.display_name){document.getElementById('ubicacion').value=d.display_name;document.getElementById('ubicacionServiciosTexto').textContent='📍 '+d.display_name;}
+  }catch{}
+};
+window.guardarPedidoReal=async function(){
+  const tipo=document.getElementById('tipoServicio').value;
+  const ubi=document.getElementById('ubicacion').value.trim();
+  const div=document.getElementById('servicioResultado');div.style.display='block';
+  if(!ubi||pedidoLat===null){mostrarResultado(div,'Elegí ubicación en el mapa',true);return;}
+  const {data:{user}}=await supabaseClient.auth.getUser();if(!user){mostrarResultado(div,'Iniciá sesión',true);return;}
+  div.textContent='Enviando...';
+  const {error}=await supabaseClient.from('pedidos').insert([{usuario_id:user.id,tipo_servicio:tipo,ubicacion:ubi,lat:pedidoLat,lon:pedidoLon,estado:'Esperando aceptación'}]);
+  mostrarResultado(div,error?'Error: '+error.message:'¡Pedido enviado!',!!error);
+};
+window.cargarPedidosReal=async function(){
+  const div=document.getElementById('listaPedidos');div.innerHTML='Cargando...';
+  const {data,error}=await supabaseClient.from('pedidos').select('*').eq('estado','Esperando aceptación').order('creado_en',{ascending:false});
+  if(error){div.innerHTML=`<div class="resultado error">${error.message}</div>`;return;}
+  if(!data.length){div.innerHTML='No hay pedidos';return;}
+  div.innerHTML=data.map(p=>`<div class="resultado"><b>${p.tipo_servicio}</b><br>${p.ubicacion}<br><button class="btn" onclick="aceptarPedidoReal('${p.id}')">Aceptar</button></div>`).join('');
+};
+window.aceptarPedidoReal=async function(id){
+  const {data:{user}}=await supabaseClient.auth.getUser();
+  const {error}=await supabaseClient.from('pedidos').update({estado:'Aceptado',prestador_id:user.id}).eq('id',id);
+  if(error) alert(error.message); else cargarPedidosReal();
+};
+window.pagarConMercadoPago=async function(){
+  const div=document.getElementById('pagoResultado');div.style.display='block';div.textContent='Generando...';
+  const r=await fetch('/api/crear-pago',{method:'POST'});const d=await r.json();
+  if(!r.ok){div.textContent=d.error;return;}location.href=d.init_point;
+};
+window.guardarCalificacionReal=async function(){
+  const estrellas=(document.getElementById('estrellas').value.match(/⭐/g)||[]).length;
+  const div=document.getElementById('calificacionResultado');div.style.display='block';
+  const {data:{user}}=await supabaseClient.auth.getUser();if(!user){div.textContent='Iniciá sesión';return;}
+  const {error}=await supabaseClient.from('calificaciones').insert([{usuario_id:user.id,estrellas}]);
+  div.textContent=error?error.message:'¡Gracias!';
+};
+window.obtenerUbicacion=function(cid,tid){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat=pos.coords.latitude,lon=pos.coords.longitude;
+    document.getElementById(tid).textContent=`${lat}, ${lon}`;
+    if(!window.mapas[cid]){const m=L.map(cid).setView([lat,lon],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(m);window.mapas[cid]={map:m};}
+    setTimeout(()=>window.mapas[cid].map.invalidateSize(),100);
   });
-  boton.classList.add('activo-tab');
-}
-
-/* ---------- USUARIO ---------- */
-async function registrarUsuarioReal() {
-  const nombre = document.getElementById('nombre').value;
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('passUsuario').value;
-  const auto = document.getElementById('auto').value;
-  const anio = document.getElementById('anio').value;
-  const motor = document.getElementById('motor').value;
-
-  const div = document.getElementById('usuarioResultado');
-  div.style.display = 'block';
-  div.textContent = 'Creando cuenta...';
-
-  let userId = null;
-  const { data, error } = await supabaseClient.auth.signUp({ email, password });
-
-  if (error) {
-    if (error.message.includes('already registered') || error.message.includes('already exists')) {
-      const { data: dataLogin, error: errorLogin } = await supabaseClient.auth.signInWithPassword({ email, password });
-      if (errorLogin) {
-        div.textContent = 'Ese email ya tiene una cuenta. Ingresá la contraseña correcta de esa cuenta para sumarle el perfil de usuario.';
-        return;
-      }
-      userId = dataLogin.user.id;
-    } else {
-      div.textContent = 'Error: ' + error.message;
-      return;
+};
+// PayPal
+window.addEventListener('DOMContentLoaded',()=>{
+  const check=setInterval(()=>{
+    if(window.paypal&&document.getElementById('paypal-button-container').innerHTML===''){
+      clearInterval(check);
+      paypal.Buttons({
+        createOrder:()=>fetch('/api/crear-orden-paypal',{method:'POST'}).then(r=>r.json()).then(d=>{if(!d.id) throw new Error(d.error);return d.id;}),
+        onApprove:data=>fetch('/api/capturar-orden-paypal?orderID='+data.orderID,{method:'POST'}).then(r=>r.json()).then(()=>{document.getElementById('pagoResultado').style.display='block';document.getElementById('pagoResultado').textContent='✅ ¡Pago aprobado!';}),
+        onError:err=>{const d=document.getElementById('pagoResultado');d.style.display='block';d.textContent='Error PayPal: '+err;}
+      }).render('#paypal-button-container');
     }
-  } else {
-    userId = data.user.id;
-  }
-
-  const { error: errorPerfil } = await supabaseClient
-    .from('perfiles_usuario')
-    .upsert([{ id: userId, nombre, auto, anio, motor }]);
-
-  div.textContent = errorPerfil
-    ? 'Cuenta lista, pero hubo un error guardando el perfil: ' + errorPerfil.message
-    : 'Perfil de usuario guardado. Ya podés iniciar sesión.';
-}
-
-async function iniciarSesionUsuarioReal() {
-  const email = document.getElementById('loginEmailUsuario').value;
-  const password = document.getElementById('loginPassUsuario').value;
-  const div = document.getElementById('usuarioResultado');
-  div.style.display = 'block';
-  div.textContent = 'Iniciando sesión...';
-
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  if (error) {
-    div.textContent = 'Error: ' + error.message;
-    return;
-  }
-  document.getElementById('usuarioAuthBox').style.display = 'none';
-  document.getElementById('usuarioPanel').style.display = 'block';
-}
-
-async function cerrarSesionUsuario() {
-  try {
-    await supabaseClient.auth.signOut();
-  } catch (e) {
-    console.error(e);
-  }
-  document.getElementById('usuarioPanel').style.display = 'none';
-  document.getElementById('usuarioAuthBox').style.display = 'block';
-  document.getElementById('usuarioResultado').style.display = 'none';
-}
-
-/* ---------- PRESTADOR ---------- */
-async function registrarPrestadorReal() {
-  const nombre = document.getElementById('nombrePrestador').value;
-  const email = document.getElementById('emailPrestador').value;
-  const password = document.getElementById('passPrestador').value;
-  const tipo = document.getElementById('tipoPrestador').value;
-  const zona = document.getElementById('zonaPrestador').value;
-
-  const div = document.getElementById('prestadorResultado');
-  div.style.display = 'block';
-  div.textContent = 'Registrando...';
-
-  let userId = null;
-  const { data, error } = await supabaseClient.auth.signUp({ email, password });
-
-  if (error) {
-    if (error.message.includes('already registered') || error.message.includes('already exists')) {
-      const { data: dataLogin, error: errorLogin } = await supabaseClient.auth.signInWithPassword({ email, password });
-      if (errorLogin) {
-        div.textContent = 'Ese email ya tiene una cuenta. Ingresá la contraseña correcta de esa cuenta para sumarle el perfil de prestador.';
-        return;
-      }
-      userId = dataLogin.user.id;
-    } else {
-      div.textContent = 'Error: ' + error.message;
-      return;
-    }
-  } else {
-    userId = data.user.id;
-  }
-
-  const { error: errorPerfil } = await supabaseClient
-    .from('perfiles_prestador')
-    .upsert([{ id: userId, nombre, tipo, zona }]);
-
-  div.textContent = errorPerfil
-    ? 'Cuenta lista, pero hubo un error guardando el perfil: ' + errorPerfil.message
-    : 'Perfil de prestador guardado. Ya podés iniciar sesión.';
-}
-
-async function iniciarSesionPrestadorReal() {
-  const email = document.getElementById('loginEmailPrestador').value;
-  const password = document.getElementById('loginPassPrestador').value;
-  const div = document.getElementById('prestadorResultado');
-  div.style.display = 'block';
-  div.textContent = 'Iniciando sesión...';
-
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  if (error) {
-    div.textContent = 'Error: ' + error.message;
-    return;
-  }
-  document.getElementById('prestadorAuthBox').style.display = 'none';
-  document.getElementById('prestadorPanel').style.display = 'block';
-  cargarPedidosReal();
-}
-
-async function cerrarSesionPrestador() {
-  try {
-    await supabaseClient.auth.signOut();
-  } catch (e) {
-    console.error(e);
-  }
-  document.getElementById('prestadorPanel').style.display = 'none';
-  document.getElementById('prestadorAuthBox').style.display = 'block';
-  document.getElementById('prestadorResultado').style.display = 'none';
-}
-
-/* ---------- DIAGNÓSTICO Y PEDIDOS ---------- */
-async function guardarDiagnosticoReal() {
-  const problema = document.getElementById('problema').value;
-  const codigo = document.getElementById('codigo').value;
-  const div = document.getElementById('respuestaIA');
-
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  if (!user) {
-    div.textContent = 'Iniciá sesión como usuario primero para guardar tu diagnóstico.';
-    return;
-  }
-
-  div.textContent = 'Guardando diagnóstico...';
-
-  const { error } = await supabaseClient
-    .from('diagnosticos')
-    .insert([{ usuario_id: user.id, problema, codigo }]);
-
-  div.textContent = error
-    ? 'Error al guardar: ' + error.message
-    : 'Diagnóstico guardado. Pronto vamos a conectar el análisis con IA real.';
-}
-
-async function guardarPedidoReal() {
-  const tipoServicio = document.getElementById('tipoServicio').value;
-  const ubicacion = document.getElementById('ubicacion').value;
-  const div = document.getElementById('servicioResultado');
-  div.style.display = 'block';
-
-  if (!ubicacion || pedidoLat === null) {
-    div.textContent = 'Primero elegí tu ubicación con el botón o tocando el mapa.';
-    return;
-  }
-
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  if (!user) {
-    div.textContent = 'Iniciá sesión como usuario primero para pedir ayuda.';
-    return;
-  }
-
-  div.textContent = 'Enviando pedido...';
-
-  const { error } = await supabaseClient
-    .from('pedidos')
-    .insert([{ usuario_id: user.id, tipo_servicio: tipoServicio, ubicacion, lat: pedidoLat, lon: pedidoLon }]);
-
-  div.textContent = error
-    ? 'Error al guardar: ' + error.message
-    : 'Pedido enviado. Un prestador lo va a ver pronto.';
-}
-
-/* ---------- UBICACIÓN DEL PEDIDO (mapa / GPS, sin escribir a mano) ---------- */
-let mapaPedido = null;
-let marcadorPedido = null;
-let pedidoLat = null;
-let pedidoLon = null;
-
-function iniciarMapaPedido() {
-  if (mapaPedido) return;
-  mapaPedido = L.map('mapaServicios').setView([-31.4, -64.2], 5);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap'
-  }).addTo(mapaPedido);
-  mapaPedido.on('click', function (e) {
-    colocarPedidoEnMapa(e.latlng.lat, e.latlng.lng);
-  });
-}
-
-function usarMiUbicacionPedido() {
-  if (!navigator.geolocation) {
-    alert('Tu navegador no soporta GPS.');
-    return;
-  }
-  document.getElementById('ubicacionServiciosTexto').innerHTML = 'Buscando tu ubicación...';
-  navigator.geolocation.getCurrentPosition(function (pos) {
-    colocarPedidoEnMapa(pos.coords.latitude, pos.coords.longitude);
-  }, function (err) {
-    document.getElementById('ubicacionServiciosTexto').innerHTML =
-      'No se pudo obtener tu ubicación: ' + err.message + '. Podés tocar el mapa para marcarla manualmente.';
-    iniciarMapaPedido();
-  });
-}
-
-async function colocarPedidoEnMapa(lat, lon) {
-  iniciarMapaPedido();
-  mapaPedido.setView([lat, lon], 15);
-  setTimeout(function () { mapaPedido.invalidateSize(); }, 100);
-
-  if (marcadorPedido) {
-    marcadorPedido.setLatLng([lat, lon]);
-  } else {
-    marcadorPedido = L.marker([lat, lon], { draggable: true }).addTo(mapaPedido);
-    marcadorPedido.on('dragend', function () {
-      const pos = marcadorPedido.getLatLng();
-      colocarPedidoEnMapa(pos.lat, pos.lng);
-    });
-  }
-
-  pedidoLat = lat;
-  pedidoLon = lon;
-  document.getElementById('ubicacionServiciosTexto').innerHTML = 'Buscando la dirección...';
-
-  try {
-    const resp = await fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lon);
-    const data = await resp.json();
-    const direccion = data.display_name || (lat.toFixed(5) + ', ' + lon.toFixed(5));
-    document.getElementById('ubicacion').value = direccion;
-    document.getElementById('ubicacionServiciosTexto').innerHTML = '📍 ' + direccion;
-  } catch (e) {
-    const coordsTxt = lat.toFixed(5) + ', ' + lon.toFixed(5);
-    document.getElementById('ubicacion').value = coordsTxt;
-    document.getElementById('ubicacionServiciosTexto').innerHTML = '📍 ' + coordsTxt;
-  }
-}
-
-/* ---------- PEDIDOS DEL PRESTADOR ---------- */
-async function cargarPedidosReal() {
-  const div = document.getElementById('listaPedidos');
-  div.innerHTML = '<div class="resultado">Cargando pedidos...</div>';
-
-  const { data, error } = await supabaseClient
-    .from('pedidos')
-    .select('*')
-    .eq('estado', 'Esperando aceptación')
-    .order('creado_en', { ascending: false });
-
-  if (error) {
-    div.innerHTML = '<div class="resultado error">Error: ' + error.message + '</div>';
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    div.innerHTML = '<div class="resultado">No hay pedidos pendientes por ahora.</div>';
-    return;
-  }
-
-  div.innerHTML = data.map(function (p) {
-    return '<div class="resultado">' +
-      'Servicio: ' + p.tipo_servicio + '<br>' +
-      'Ubicación: ' + (p.ubicacion || 'No especificada') + '<br>' +
-      'Estado: ' + p.estado +
-      '<button class="btn" onclick="aceptarPedidoReal(\'' + p.id + '\')">Aceptar trabajo</button>' +
-      '</div>';
-  }).join('');
-}
-
-async function aceptarPedidoReal(pedidoId) {
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  if (!user) return;
-
-  const { error } = await supabaseClient
-    .from('pedidos')
-    .update({ estado: 'Aceptado', prestador_id: user.id })
-    .eq('id', pedidoId);
-
-  if (error) {
-    alert('Error al aceptar: ' + error.message);
-    return;
-  }
-  cargarPedidosReal();
-}
-
-/* ---------- PAGO (Mercado Pago) ---------- */
-async function pagarConMercadoPago() {
-  const div = document.getElementById('pagoResultado');
-  div.style.display = 'block';
-  div.textContent = 'Generando pago...';
-
-  try {
-    const resp = await fetch('/api/crear-pago', { method: 'POST' });
-    const data = await resp.json();
-
-    if (!resp.ok || !data.init_point) {
-      div.textContent = 'Error al generar el pago: ' + (data.error || 'intentá de nuevo.');
-      return;
-    }
-
-    window.location.href = data.init_point;
-  } catch (e) {
-    div.textContent = 'Error al generar el pago: ' + e.message;
-  }
-}
-
-/* ---------- PAGO (PayPal) ---------- */
-if (window.paypal) {
-  paypal.Buttons({
-    createOrder: function () {
-      return fetch('/api/crear-orden-paypal', { method: 'POST' })
-        .then(function (res) { return res.json(); })
-        .then(function (data) {
-          if (!data.id) {
-            throw new Error(data.error || 'No se pudo crear la orden');
-          }
-          return data.id;
-        });
-    },
-    onApprove: function (data) {
-      return fetch('/api/capturar-orden-paypal?orderID=' + data.orderID, {
-        method: 'POST'
-      })
-        .then(function (res) { return res.json(); })
-        .then(function () {
-          const div = document.getElementById('pagoResultado');
-          div.style.display = 'block';
-          div.textContent = '✅ ¡Pago con PayPal aprobado! Gracias por confiar en Motoras.';
-        });
-    },
-    onError: function (err) {
-      const div = document.getElementById('pagoResultado');
-      div.style.display = 'block';
-      div.textContent = 'Error con PayPal: ' + err;
-    }
-  }).render('#paypal-button-container');
-}
-
-/* ---------- CALIFICACIÓN ---------- */
-async function guardarCalificacionReal() {
-  const valorSelect = document.getElementById('estrellas').value;
-  const estrellas = (valorSelect.match(/⭐/g) || []).length;
-  const div = document.getElementById('calificacionResultado');
-  div.style.display = 'block';
-
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  if (!user) {
-    div.textContent = 'Iniciá sesión como usuario primero para calificar.';
-    return;
-  }
-
-  div.textContent = 'Enviando calificación...';
-
-  const { error } = await supabaseClient
-    .from('calificaciones')
-    .insert([{ usuario_id: user.id, estrellas }]);
-
-  div.textContent = error
-    ? 'Error al guardar: ' + error.message
-    : '¡Gracias por tu calificación!';
-}
-
-const mapas = {};
-
-function obtenerUbicacion(containerId, textId) {
-  if (!navigator.geolocation) {
-    alert('Tu navegador no soporta GPS.');
-    return;
-  }
-
-  document.getElementById(textId).innerHTML = 'Buscando ubicación...';
-
-  navigator.geolocation.getCurrentPosition(function (pos) {
-    const lat = pos.coords.latitude;
-    const lon = pos.coords.longitude;
-
-    document.getElementById(textId).innerHTML =
-      '📍 Latitud: ' + lat + '<br>📍 Longitud: ' + lon;
-
-    if (!mapas[containerId]) {
-      const mapa = L.map(containerId).setView([lat, lon], 14);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap'
-      }).addTo(mapa);
-      mapas[containerId] = { map: mapa, marker: null };
-    } else {
-      mapas[containerId].map.setView([lat, lon], 14);
-      if (mapas[containerId].marker) {
-        mapas[containerId].map.removeLayer(mapas[containerId].marker);
-      }
-    }
-
-    // Fuerza a Leaflet a recalcular el tamaño del contenedor (evita mapas en blanco)
-    setTimeout(function () {
-      mapas[containerId].map.invalidateSize();
-    }, 100);
-
-    mapas[containerId].marker = L.marker([lat, lon])
-      .addTo(mapas[containerId].map)
-      .bindPopup('📍 Tu ubicación')
-      .openPopup();
-
-    /* DEMO */
-    L.marker([lat + 0.01, lon + 0.005]).addTo(mapas[containerId].map).bindPopup('🔧 Mecánico Motoras');
-    L.marker([lat - 0.008, lon - 0.004]).addTo(mapas[containerId].map).bindPopup('🚚 Grúa');
-    L.marker([lat + 0.006, lon - 0.01]).addTo(mapas[containerId].map).bindPopup('🏢 Taller');
-  }, function (err) {
-    document.getElementById(textId).innerHTML =
-      'No se pudo obtener la ubicación: ' + err.message + '. Revisá que el navegador tenga permiso de ubicación activado para este sitio.';
-  });
-}
+  },500);
+});
