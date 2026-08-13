@@ -3,18 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Motoras</title>
+<title>Motoras - Asistencia mecánica inteligente</title>
 <link rel="stylesheet" href="css/estilo.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
-
 <header>
-  <img src="file_000000001b08820e918a04e429d3814b.png" alt="Motoras" class="logo">
+  <img src="img/logo.png" alt="Motoras" class="logo" onerror="this.style.display='none'">
   <h1>MOTORAS</h1>
   <p>Asistencia mecánica inteligente con IA</p>
 </header>
-
 <nav>
   <button onclick="mostrar('inicio')">Inicio</button>
   <button onclick="mostrar('usuario')">Usuario</button>
@@ -24,9 +22,7 @@
   <button onclick="mostrar('pago')">Pago</button>
   <button onclick="mostrar('calificacion')">Calificar</button>
 </nav>
-
 <main>
-
   <section id="inicio" class="activo">
     <div class="card">
       <h2>Bienvenido a Motoras</h2>
@@ -42,42 +38,31 @@
   <section id="usuario">
     <div class="card">
       <h2>Mi cuenta</h2>
-
       <div id="usuarioAuthBox">
         <div class="tabs">
           <button class="tab-btn activo-tab" onclick="cambiarTab('usuario','login',this)">Iniciar sesión</button>
           <button class="tab-btn" onclick="cambiarTab('usuario','registro',this)">Registrarse</button>
         </div>
-
         <div id="usuario-login" class="tab-panel activo-tab-panel">
-          <input id="loginEmailUsuario" placeholder="Email">
+          <input id="loginEmailUsuario" type="email" placeholder="Email">
           <input id="loginPassUsuario" type="password" placeholder="Contraseña">
           <button class="btn" onclick="iniciarSesionUsuarioReal()">Iniciar sesión</button>
         </div>
-
         <div id="usuario-registro" class="tab-panel">
           <input id="nombre" placeholder="Nombre completo">
-          <input id="email" placeholder="Email">
-          <input id="passUsuario" type="password" placeholder="Contraseña">
+          <input id="email" type="email" placeholder="Email">
+          <input id="passUsuario" type="password" placeholder="Contraseña (min 6)">
           <h3>Datos del vehículo</h3>
           <input id="auto" placeholder="Marca y modelo">
-          <input id="anio" placeholder="Año">
+          <input id="anio" type="number" placeholder="Año">
           <input id="motor" placeholder="Motor">
           <button class="btn" onclick="registrarUsuarioReal()">Crear cuenta</button>
         </div>
-
         <div id="usuarioResultado" class="resultado" style="display:none;"></div>
       </div>
-
       <div id="usuarioPanel" style="display:none;">
         <h3>¡Bienvenido!</h3>
         <p>Tu sesión de usuario está activa.</p>
-        <div class="tarjetas" style="margin-bottom:10px;">
-          <div class="tarjeta" style="cursor:pointer;" onclick="mostrar('diagnostico')">🤖<br>Diagnóstico</div>
-          <div class="tarjeta" style="cursor:pointer;" onclick="mostrar('servicios')">🔧<br>Servicios</div>
-          <div class="tarjeta" style="cursor:pointer;" onclick="mostrar('pago')">💰<br>Pago</div>
-          <div class="tarjeta" style="cursor:pointer;" onclick="mostrar('calificacion')">⭐<br>Calificar</div>
-        </div>
         <button class="btn" onclick="cerrarSesionUsuario()">Cerrar sesión</button>
       </div>
     </div>
@@ -86,11 +71,12 @@
   <section id="diagnostico">
     <div class="card">
       <h2>🤖 Motoras IA</h2>
-      <p>Describe la falla del vehículo</p>
       <textarea id="problema" placeholder="Ej: se apaga al sacar la marcha"></textarea>
       <input id="codigo" placeholder="Código OBD2 (opcional)">
-      <input type="file" accept="image/*">
-      <input type="file" accept="audio/*">
+      <label>Foto (opcional)</label>
+      <input id="fotoFalla" type="file" accept="image/*">
+      <label>Audio (opcional)</label>
+      <input id="audioFalla" type="file" accept="audio/*">
       <button class="btn" id="btnDiagnosticar" onclick="guardarDiagnosticoReal()">Analizar falla</button>
       <div id="respuestaIA" class="resultado">Esperando diagnóstico...</div>
     </div>
@@ -98,17 +84,12 @@
 
   <section id="servicios">
     <div class="card">
-      <h2>🔧 Solicitar asistencia Motoras</h2>
-      <select id="tipoServicio">
-        <option>Mecánico móvil</option>
-        <option>Grúa</option>
-        <option>Taller</option>
-      </select>
-      <input id="ubicacion" placeholder="Tocá 'Usar mi ubicación' o el mapa" readonly>
+      <h2>🔧 Solicitar asistencia</h2>
+      <select id="tipoServicio"><option>Mecánico móvil</option><option>Grúa</option><option>Taller</option></select>
+      <input id="ubicacion" placeholder="Usá el botón o el mapa" readonly>
       <button class="btn" onclick="usarMiUbicacionPedido()">📍 Usar mi ubicación</button>
       <button class="btn" onclick="guardarPedidoReal()">Buscar ayuda</button>
       <div id="servicioResultado" class="resultado" style="display:none;"></div>
-      <h3 style="margin-top:20px;">Ajustá el punto en el mapa si hace falta</h3>
       <div id="ubicacionServiciosTexto" class="resultado">Todavía no elegiste ubicación.</div>
       <div id="mapaServicios" style="height:350px; margin-top:15px; border-radius:12px;"></div>
     </div>
@@ -117,91 +98,68 @@
   <section id="prestador">
     <div class="card">
       <h2>🛠 Cuenta de prestador</h2>
-      <p>Mecánico, taller o grúa</p>
-
       <div id="prestadorAuthBox">
         <div class="tabs">
           <button class="tab-btn activo-tab" onclick="cambiarTab('prestador','login',this)">Iniciar sesión</button>
           <button class="tab-btn" onclick="cambiarTab('prestador','registro',this)">Registrarse</button>
         </div>
-
         <div id="prestador-login" class="tab-panel activo-tab-panel">
-          <input id="loginEmailPrestador" placeholder="Email">
+          <input id="loginEmailPrestador" type="email" placeholder="Email">
           <input id="loginPassPrestador" type="password" placeholder="Contraseña">
           <button class="btn" onclick="iniciarSesionPrestadorReal()">Iniciar sesión</button>
         </div>
-
         <div id="prestador-registro" class="tab-panel">
-          <input id="nombrePrestador" placeholder="Nombre completo o del taller">
-          <input id="emailPrestador" placeholder="Email">
+          <input id="nombrePrestador" placeholder="Nombre del taller">
+          <input id="emailPrestador" type="email" placeholder="Email">
           <input id="passPrestador" type="password" placeholder="Contraseña">
-          <select id="tipoPrestador">
-            <option>Taller</option>
-            <option>Grúa</option>
-          </select>
+          <select id="tipoPrestador"><option>Taller</option><option>Grúa</option><option>Mecánico móvil</option></select>
           <input id="zonaPrestador" placeholder="Zona de cobertura">
-          <button class="btn" onclick="registrarPrestadorReal()">Registrarme como prestador</button>
+          <button class="btn" onclick="registrarPrestadorReal()">Registrarme</button>
         </div>
-
         <div id="prestadorResultado" class="resultado" style="display:none;"></div>
       </div>
-
       <div id="prestadorPanel" style="display:none;">
-        <h3>¡Bienvenido!</h3>
-        <p>Tu sesión de prestador está activa.</p>
-        <div class="tarjetas" style="margin-bottom:10px;">
-          <div class="tarjeta" style="cursor:pointer;" onclick="mostrar('servicios')">🔧<br>Servicios</div>
-          <div class="tarjeta" style="cursor:pointer;" onclick="mostrar('pago')">💰<br>Pago</div>
-          <div class="tarjeta" style="cursor:pointer;" onclick="mostrar('calificacion')">⭐<br>Calificar</div>
-        </div>
-        <button class="btn" onclick="cerrarSesionPrestador()">Cerrar sesión</button>
-
-        <h3 style="margin-top:20px;">📋 Pedidos pendientes</h3>
+        <h3>¡Bienvenido prestador!</h3>
         <button class="btn" onclick="cargarPedidosReal()">Actualizar pedidos</button>
         <div id="listaPedidos"></div>
-
-        <h3 style="margin-top:20px;">📍 Ubicación del pedido</h3>
-        <button class="btn" onclick="obtenerUbicacion('mapaPrestador','ubicacionPrestadorTexto')">Ver en el mapa</button>
         <div id="ubicacionPrestadorTexto" class="resultado">Esperando ubicación...</div>
         <div id="mapaPrestador" style="height:350px; margin-top:15px; border-radius:12px;"></div>
+        <button class="btn" onclick="cerrarSesionPrestador()">Cerrar sesión</button>
       </div>
     </div>
   </section>
 
   <section id="pago">
     <div class="card">
-      <h2>💰 Motoras Pago Demo</h2>
-      <p>Diagnóstico IA</p>
-      <h3>$3 USD</h3>
-      <button class="btn" id="btnPagar" onclick="pagarConMercadoPago()">Pagar con Mercado Pago</button>
+      <h2>💰 Motoras Pago</h2>
+      <h3>$3 USD / $3000 ARS</h3>
+      <button class="btn" onclick="pagarConMercadoPago()">Pagar con Mercado Pago</button>
       <div id="pagoResultado" class="resultado" style="display:none;"></div>
-
-      <h3 style="margin-top:20px;">O pagá con PayPal / tarjeta internacional</h3>
+      <h3 style="margin-top:20px;">O PayPal / tarjeta</h3>
       <div id="paypal-button-container"></div>
     </div>
   </section>
 
   <section id="calificacion">
     <div class="card">
-      <h2>⭐ Calificar servicio</h2>
-      <select id="estrellas">
-        <option>⭐⭐⭐⭐⭐</option>
-        <option>⭐⭐⭐⭐</option>
-        <option>⭐⭐⭐</option>
-      </select>
-      <button class="btn" onclick="guardarCalificacionReal()">Enviar calificación</button>
+      <h2>⭐ Calificar</h2>
+      <select id="estrellas"><option>⭐⭐⭐⭐⭐</option><option>⭐⭐⭐⭐</option><option>⭐⭐⭐</option></select>
+      <button class="btn" onclick="guardarCalificacionReal()">Enviar</button>
       <div id="calificacionResultado" class="resultado" style="display:none;"></div>
     </div>
   </section>
-
 </main>
+<footer>Motoras © 2026 - Corregida</footer>
 
-<footer>Motoras © 2026 - Demo</footer>
-
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/script.js"></script>
-<script src="https://www.paypal.com/sdk/js?client-id=AbMb_RzOR5YErLs9s6hSejhGtwEiSN7itjKtXlv3CwL-EnouKFyoUmW3zhcQWU-Femg47NXNxGXfh2j3&currency=USD"></script>
-<script src="js/app.js"></script>
+<script type="module" src="js/config.js"></script>
+<script type="module" src="js/app.js"></script>
+<script type="module">
+import { CONFIG } from './js/config.js';
+const s = document.createElement('script');
+s.src = `https://www.paypal.com/sdk/js?client-id=${CONFIG.PAYPAL_CLIENT_ID}&currency=USD`;
+document.head.appendChild(s);
+</script>
 </body>
             </html>
