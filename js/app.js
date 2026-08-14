@@ -50,14 +50,12 @@ window.addEventListener('DOMContentLoaded', async()=>{
 
 function validarEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 function mostrarResultado(el,txt,err=false){ el.style.display='block'; el.textContent=txt; el.classList.toggle('error',err); }
-
 window.cambiarTab = function(sec,tab,btn){
   document.getElementById(sec+'-login').classList.toggle('activo-tab-panel',tab==='login');
   document.getElementById(sec+'-registro').classList.toggle('activo-tab-panel',tab==='registro');
   document.querySelectorAll('#'+sec+'.tab-btn').forEach(b=>b.classList.remove('activo-tab'));
   btn.classList.add('activo-tab');
 };
-
 window.registrarUsuarioReal = async function(){
   const nombre=document.getElementById('nombre').value.trim();
   const email=document.getElementById('email').value.trim();
@@ -67,43 +65,26 @@ window.registrarUsuarioReal = async function(){
   const motor=document.getElementById('motor').value.trim();
   const div=document.getElementById('usuarioResultado'); div.style.display='block';
   if(!nombre||!email||!pass){ mostrarResultado(div,'Completá nombre, email y contraseña.',true); return; }
-  if(!validarEmail(email)){ mostrarResultado(div,'Email inválido.',true); return; }
-  if(pass.length<6){ mostrarResultado(div,'Min 6 caracteres.',true); return; }
-  div.textContent='Creando...';
-  let uid=null;
+  div.textContent='Creando...'; let uid=null;
   const {data,error}=await supabaseClient.auth.signUp({email,password:pass});
   if(error){
     if(error.message.toLowerCase().includes('already')){
       const {data:dl,error:el}=await supabaseClient.auth.signInWithPassword({email,password:pass});
-      if(el){ mostrarResultado(div,'Email ya existe, usá su contraseña.',true); return; }
-      uid=dl.user.id;
+      if(el){ mostrarResultado(div,'Email ya existe.',true); return; } uid=dl.user.id;
     } else { mostrarResultado(div,'Error: '+error.message,true); return; }
-  } else {
-    uid=data.user?.id;
-    if(!uid){ mostrarResultado(div,'Te enviamos email de confirmación.'); return; }
-  }
+  } else { uid=data.user?.id; if(!uid){ mostrarResultado(div,'Te enviamos email.'); return; } }
   const {error:ep}=await supabaseClient.from('perfiles_usuario').upsert([{id:uid,nombre,auto,anio,motor}]);
-  mostrarResultado(div,ep?'Error perfil: '+ep.message:'¡Cuenta creada! Ya podés entrar.',!!ep);
+  mostrarResultado(div,ep?'Error: '+ep.message:'¡Cuenta creada!',!!ep);
 };
-
 window.iniciarSesionUsuarioReal = async function(){
   const email=document.getElementById('loginEmailUsuario').value.trim();
   const pass=document.getElementById('loginPassUsuario').value;
-  const div=document.getElementById('usuarioResultado'); div.style.display='block';
-  div.textContent='Entrando...';
+  const div=document.getElementById('usuarioResultado'); div.style.display='block'; div.textContent='Entrando...';
   const {error}=await supabaseClient.auth.signInWithPassword({email,password:pass});
   if(error){ mostrarResultado(div,'Error: '+error.message,true); return; }
-  document.getElementById('usuarioAuthBox').style.display='none';
-  document.getElementById('usuarioPanel').style.display='block';
-  mostrarResultado(div,'¡Bienvenido!');
+  document.getElementById('usuarioAuthBox').style.display='none'; document.getElementById('usuarioPanel').style.display='block'; mostrarResultado(div,'¡Bienvenido!');
 };
-
-window.cerrarSesionUsuario = async function(){
-  await supabaseClient.auth.signOut();
-  document.getElementById('usuarioPanel').style.display='none';
-  document.getElementById('usuarioAuthBox').style.display='block';
-};
-
+window.cerrarSesionUsuario = async function(){ await supabaseClient.auth.signOut(); document.getElementById('usuarioPanel').style.display='none'; document.getElementById('usuarioAuthBox').style.display='block'; };
 window.registrarPrestadorReal = async function(){
   const nombre=document.getElementById('nombrePrestador').value.trim();
   const email=document.getElementById('emailPrestador').value.trim();
@@ -112,41 +93,26 @@ window.registrarPrestadorReal = async function(){
   const zona=document.getElementById('zonaPrestador').value.trim();
   const div=document.getElementById('prestadorResultado'); div.style.display='block';
   if(!nombre||!email||!pass){ mostrarResultado(div,'Completá campos.',true); return; }
-  div.textContent='Registrando...';
-  let uid=null;
+  div.textContent='Registrando...'; let uid=null;
   const {data,error}=await supabaseClient.auth.signUp({email,password:pass});
   if(error){
     if(error.message.toLowerCase().includes('already')){
       const {data:dl,error:el}=await supabaseClient.auth.signInWithPassword({email,password:pass});
-      if(el){ mostrarResultado(div,'Email ya existe.',true); return; }
-      uid=dl.user.id;
+      if(el){ mostrarResultado(div,'Email ya existe.',true); return; } uid=dl.user.id;
     } else { mostrarResultado(div,'Error: '+error.message,true); return; }
-  } else {
-    uid=data.user?.id;
-    if(!uid){ mostrarResultado(div,'Confirmá email y entrá.'); return; }
-  }
+  } else { uid=data.user?.id; if(!uid){ mostrarResultado(div,'Confirmá email.'); return; } }
   const {error:ep}=await supabaseClient.from('perfiles_prestador').upsert([{id:uid,nombre,tipo,zona}]);
   mostrarResultado(div,ep?'Error: '+ep.message:'¡Prestador guardado!',!!ep);
 };
-
 window.iniciarSesionPrestadorReal = async function(){
   const email=document.getElementById('loginEmailPrestador').value.trim();
   const pass=document.getElementById('loginPassPrestador').value;
-  const div=document.getElementById('prestadorResultado'); div.style.display='block';
-  div.textContent='Entrando...';
+  const div=document.getElementById('prestadorResultado'); div.style.display='block'; div.textContent='Entrando...';
   const {error}=await supabaseClient.auth.signInWithPassword({email,password:pass});
   if(error){ mostrarResultado(div,'Error: '+error.message,true); return; }
-  document.getElementById('prestadorAuthBox').style.display='none';
-  document.getElementById('prestadorPanel').style.display='block';
-  cargarPedidosReal();
+  document.getElementById('prestadorAuthBox').style.display='none'; document.getElementById('prestadorPanel').style.display='block'; cargarPedidosReal();
 };
-
-window.cerrarSesionPrestador = async function(){
-  await supabaseClient.auth.signOut();
-  document.getElementById('prestadorPanel').style.display='none';
-  document.getElementById('prestadorAuthBox').style.display='block';
-};
-
+window.cerrarSesionPrestador = async function(){ await supabaseClient.auth.signOut(); document.getElementById('prestadorPanel').style.display='none'; document.getElementById('prestadorAuthBox').style.display='block'; };
 window.guardarDiagnosticoReal = async function(){
   const problema=document.getElementById('problema').value.trim();
   const codigo=document.getElementById('codigo').value.trim();
@@ -157,10 +123,9 @@ window.guardarDiagnosticoReal = async function(){
   if(!user){ div.textContent='Iniciá sesión primero.'; div.style.display='block'; return; }
   div.textContent='Guardando...'; div.style.display='block'; div.classList.remove('error');
   const {error}=await supabaseClient.from('diagnosticos').insert([{usuario_id:user.id,problema,codigo}]);
-  div.textContent=error?'Error: '+error.message:'Diagnóstico guardado. IA lo analizará.';
+  div.textContent=error?'Error: '+error.message:'Diagnóstico guardado.';
   if(error) div.classList.add('error');
 };
-
 let mapaPedido=null; let marcadorPedido=null; let pedidoLat=null; let pedidoLon=null;
 export const mapas={};
 window.iniciarMapaPedido=function(){
@@ -178,14 +143,13 @@ window.usarMiUbicacionPedido=function(){
 window.colocarPedidoEnMapa=async function(lat,lon){
   iniciarMapaPedido(); pedidoLat=lat; pedidoLon=lon;
   if(marcadorPedido) mapaPedido.removeLayer(marcadorPedido);
-  marcadorPedido=L.marker([lat,lon]).addTo(mapaPedido).bindPopup('📍 Tu vehículo').openPopup();
-  mapaPedido.setView([lat,lon],14);
+  marcadorPedido=L.marker([lat][lon]).addTo(mapaPedido).bindPopup('📍 Tu vehículo').openPopup();
+  mapaPedido.setView([lat][lon],14);
   document.getElementById('ubicacionServiciosTexto').textContent=`📍 ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
   try{
     const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
     const d=await r.json();
     document.getElementById('ubicacion').value=d.display_name||`${lat}, ${lon}`;
-    document.getElementById('ubicacionServiciosTexto').textContent='📍 '+d.display_name;
   }catch{ document.getElementById('ubicacion').value=`${lat}, ${lon}`; }
 };
 window.guardarPedidoReal=async function(){
@@ -199,7 +163,6 @@ window.guardarPedidoReal=async function(){
   const {error}=await supabaseClient.from('pedidos').insert([{usuario_id:user.id,tipo_servicio:tipo,ubicacion:ubi,lat:pedidoLat,lon:pedidoLon,estado:'Esperando aceptación'}]);
   div.textContent=error?'Error: '+error.message:'¡Pedido enviado!';
 };
-
 window.cargarPedidosReal=async function(){
   const div=document.getElementById('listaPedidos'); div.innerHTML='Cargando...';
   const {data,error}=await supabaseClient.from('pedidos').select('*').eq('estado','Esperando aceptación').order('creado_en',{ascending:false});
@@ -212,7 +175,6 @@ window.aceptarPedidoReal=async function(id){
   await supabaseClient.from('pedidos').update({estado:'Aceptado',prestador_id:user.id}).eq('id',id);
   cargarPedidosReal();
 };
-
 window.pagarConMercadoPago=async function(){
   const div=document.getElementById('pagoResultado'); div.style.display='block'; div.textContent='Generando pago...';
   try{
@@ -222,7 +184,6 @@ window.pagarConMercadoPago=async function(){
     window.location.href=d.init_point;
   }catch(e){ div.textContent='Error: '+e.message; }
 };
-
 window.addEventListener('DOMContentLoaded',()=>{
   const check=setInterval(()=>{
     if(!window.paypal||!document.getElementById('paypal-button-container')) return;
@@ -240,7 +201,6 @@ window.addEventListener('DOMContentLoaded',()=>{
     }).render('#paypal-button-container');
   },500);
 });
-
 window.guardarCalificacionReal=async function(){
   const v=document.getElementById('estrellas').value;
   const est=(v.match(/⭐/g)||[]).length;
@@ -250,42 +210,32 @@ window.guardarCalificacionReal=async function(){
   const {error}=await supabaseClient.from('calificaciones').insert([{usuario_id:user.id,estrellas:est}]);
   div.textContent=error?'Error: '+error.message:'¡Gracias!';
 };
-
-// ---------- PRECIO DOLAR ACTUALIZADO ----------
+// PRECIO DOLAR FIX
 window.actualizarPrecioDolar=async function(){
-  try{
-    const r=await fetch('https://dolarapi.com/v1/dolares/blue');
-    const d=await r.json();
-    const venta=d.venta||1450;
-    const ars=Math.round(venta*3);
-    if(document.getElementById('dolarValor')) document.getElementById('dolarValor').textContent=`$${venta.toLocaleString('es-AR')} ARS`;
-    if(document.getElementById('precioARS')) document.getElementById('precioARS').textContent=`$${ars.toLocaleString('es-AR')} ARS`;
-    if(document.getElementById('precioUSD')) document.getElementById('precioUSD').textContent=`3 USD`;
-  }catch{
-    try{
-      const r2=await fetch('/api/dolar');
-      const d2=await r2.json();
-      const venta=d2.venta||1450;
-      if(document.getElementById('dolarValor')) document.getElementById('dolarValor').textContent=`$${venta} ARS`;
-      if(document.getElementById('precioARS')) document.getElementById('precioARS').textContent=`$${Math.round(venta*3)} ARS`;
-    }catch{
-      if(document.getElementById('dolarValor')) document.getElementById('dolarValor').textContent='No disponible';
-      if(document.getElementById('precioARS')) document.getElementById('precioARS').textContent='$4500 ARS (aprox)';
-    }
-  }
+  const elDolar=document.getElementById('dolarValor');
+  const elARS=document.getElementById('precioARS');
+  const elUSD=document.getElementById('precioUSD');
+  if(elUSD) elUSD.textContent='3 USD';
+  let venta=null;
+  try{ const r=await fetch('https://dolarapi.com/v1/dolares/blue',{cache:'no-store'}); if(r.ok){ const d=await r.json(); venta=d.venta; } }catch(e){}
+  if(!venta){ try{ const r2=await fetch('/api/dolar',{cache:'no-store'}); if(r2.ok){ const d2=await r2.json(); venta=d2.venta; } }catch(e){} }
+  if(!venta){ try{ const r3=await fetch('https://api.bluelytics.com.ar/v2/latest',{cache:'no-store'}); if(r3.ok){ const d3=await r3.json(); venta=d3.blue.value_sell; } }catch(e){} }
+  if(!venta) venta=1450;
+  const ars=Math.round(venta*3);
+  if(elDolar) elDolar.textContent=`$${venta.toLocaleString('es-AR')} ARS`;
+  if(elARS) elARS.textContent=`$${ars.toLocaleString('es-AR')} ARS`;
 };
-
 window.obtenerUbicacion=function(cid,tid){
   navigator.geolocation.getCurrentPosition(p=>{
     const lat=p.coords.latitude, lon=p.coords.longitude;
     document.getElementById(tid).textContent=`📍 ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
     if(!mapas[cid]){
-      const m=L.map(cid).setView([lat,lon],14);
+      const m=L.map(cid).setView([lat][lon],14);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
       mapas[cid]={map:m,marker:null};
-    } else mapas[cid].map.setView([lat,lon],14);
+    } else mapas[cid].map.setView([lat][lon],14);
     setTimeout(()=>mapas[cid].map.invalidateSize(),100);
     if(mapas[cid].marker) mapas[cid].map.removeLayer(mapas[cid].marker);
-    mapas[cid].marker=L.marker([lat,lon]).addTo(mapas[cid].map).bindPopup('📍 Pedido').openPopup();
+    mapas[cid].marker=L.marker([lat][lon]).addTo(mapas[cid].map).bindPopup('📍 Pedido').openPopup();
   });
 };
