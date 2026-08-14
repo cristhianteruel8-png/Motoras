@@ -1,10 +1,24 @@
 export const config = { runtime: 'nodejs' };
-export default async function handler(req,res){
-  if(req.method!=='POST') return res.status(405).json({error:'No permitido'});
-  try{
-    const base=process.env.BASE_URL||'https://www.motoras.com.ar';
-    const r=await fetch('https://api.mercadopago.com/checkout/preferences',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${process.env.MP_ACCESS_TOKEN}`},body:JSON.stringify({items:[{title:'Diagnóstico Motoras IA',quantity:1,unit_price:3000,currency_id:'ARS'}],back_urls:{success:`${base}/?pago=exito`,failure:`${base}/?pago=fallo`,pending:`${base}/?pago=pendiente`},auto_return:'approved'})});
-    const d=await r.json(); if(!r.ok) return res.status(500).json({error:d.message});
-    res.status(200).json({init_point:d.init_point});
-  }catch(e){res.status(500).json({error:e.message});}
+async function obtenerDolarBlue() {
+  try { const r = await fetch('https://dolarapi.com/v1/dolares/blue'); const d = await r.json(); return d.venta || 1450; }
+  catch { return 1450; }
 }
+export default async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
+  try {
+    const dolar = await obtenerDolarBlue();
+    const precioARS = Math.round(dolar * 3);
+    const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}` },
+      body: JSON.stringify({
+        items: [{ title: 'Diagnóstico Motoras IA - 3 USD', quantity: 1, unit_price: precioARS, currency_id: 'ARS' }],
+        back_urls: { success: `${process.env.BASE_URL}/?pago=exito`, failure: `${process.env.BASE_URL}/?pago=fallo`, pending: `${process.env.BASE_URL}/?pago=pendiente` },
+        auto_return: 'approved'
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) return res.status(500).json({ error: JSON.stringify(data) });
+    return res.status(200).json({ init_point: data.init_point, precioARS, dolar });
+  } catch (e) { return res.status(500).json({ error: e.message }); }
+                                                   }
