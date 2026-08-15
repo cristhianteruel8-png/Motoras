@@ -1,11 +1,16 @@
 export const config = { runtime: 'nodejs' };
-function getPaypalBase() { return process.env.PAYPAL_ENV === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com'; }
+function getPaypalBase() {
+  const env = process.env.PAYPAL_ENV || 'sandbox';
+  return env === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+}
 async function obtenerAccessToken() {
-  if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_SECRET) throw new Error(`Faltan credenciales: CLIENT_ID=${process.env.PAYPAL_CLIENT_ID?'OK':'FALTA'} SECRET=${process.env.PAYPAL_SECRET?'OK':'FALTA'} ENV=${process.env.PAYPAL_ENV}`);
-  const auth = Buffer.from(`${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_SECRET}`).toString('base64');
+  const id = process.env.PAYPAL_CLIENT_ID;
+  const secret = process.env.PAYPAL_SECRET;
+  if (!id || !secret) throw new Error(`Faltan credenciales en Vercel: CLIENT_ID=${id?'OK':'FALTA'} SECRET=${secret?'OK':'FALTA'} - Agregalas en Settings > Environment Variables`);
+  const auth = Buffer.from(`${id}:${secret}`).toString('base64');
   const resp = await fetch(`${getPaypalBase()}/v1/oauth2/token`, { method: 'POST', headers: { Authorization: `Basic ${auth}`, 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'grant_type=client_credentials' });
   const data = await resp.json();
-  if (!resp.ok) throw new Error(`PayPal auth failed [${process.env.PAYPAL_ENV}] ${JSON.stringify(data)} - Verifica que CLIENT_ID y SECRET sean del mismo entorno sandbox/live`);
+  if (!resp.ok) throw new Error(`PayPal auth failed en ${process.env.PAYPAL_ENV||'sandbox'}: ${JSON.stringify(data)}`);
   return data.access_token;
 }
 export default async function handler(req, res) {
@@ -17,4 +22,4 @@ export default async function handler(req, res) {
     if (!orderResp.ok) return res.status(500).json({ error: JSON.stringify(orderData) });
     return res.status(200).json({ id: orderData.id });
   } catch (e) { return res.status(500).json({ error: e.message }); }
-}
+                                                         }
