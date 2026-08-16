@@ -182,9 +182,10 @@ input:focus,textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 0
         <div class="dolar-info">Dólar blue: <span id="dolar-valor">$1.545</span> - Actualizado <span id="fecha-dolar">hoy</span></div>
       </div>
       <div class="pagos-grid">
-        <div id="mp-button-container"></div>
-        <button id="mercadopagoBtn" class="btn-mp">💳 PAGAR CON MERCADO PAGO</button>
-        <div id="paypal-button-container" style="min-height:50px"></div><div id="paypalStatus" style="font-size:12px;color:#aaa;margin-top:8px"></div>
+        <button id="mercadopagoBtn" class="btn-mp">💳 PAGAR CON TARJETA / MERCADO PAGO - $4.635 ARS</button>
+        <button id="paypalManualBtn" class="btn-paypal" style="background:#ffc439;color:#000;border:none;padding:16px;border-radius:14px;font-weight:800;cursor:pointer">🅿️ PAGAR CON PAYPAL - 3 USD</button>
+        <div id="paypal-button-container" style="min-height:50px;margin-top:10px"></div>
+        <div id="paypalStatus" style="font-size:12px;color:#aaa;margin-top:8px"></div>
       </div>
       <div id="pagoStatus" class="status"></div>
       <p class="small">Pago seguro. Se desbloquea la IA al instante.</p>
@@ -287,22 +288,40 @@ document.getElementById('mercadopagoBtn')?.addEventListener('click', async ()=>{
     else { status.textContent='Error MP: '+(data.error||JSON.stringify(data)); }
   }catch(e){ status.textContent='Error JS: '+e.message; }
 });
+document.getElementById('paypalManualBtn')?.addEventListener('click', async ()=>{
+  const status = document.getElementById('pagoStatus');
+  status.textContent='⏳ Conectando con PayPal...';
+  try{
+    const res = await fetch('/api/crear-orden-paypal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});
+    const text = await res.text();
+    let data; try{ data = JSON.parse(text); } catch{ status.textContent='PayPal devolvió HTML: '+text.slice(0,200); return; }
+    if(data.error){ status.textContent='PayPal error: '+data.error; return; }
+    if(data.approve_link){ window.location.href = data.approve_link; }
+    else if(data.id){ status.textContent='Orden creada '+data.id+' pero sin link, revisá PAYPAL_ENV'; }
+  }catch(e){ status.textContent='Error PayPal: '+e.message; }
+});
+try{
 if(window.paypal){
   paypal.Buttons({
+    style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' },
     createOrder: async ()=>{
-      const res = await fetch('/api/crear-orden-paypal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({monto: PRECIO_USD})});
+      const res = await fetch('/api/crear-orden-paypal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});
       const data = await res.json();
+      if(data.error) throw new Error(data.error);
       return data.id;
     },
     onApprove: async (data)=>{
       await fetch(`/api/capturar-orden-paypal?orderID=${data.orderID}`,{method:'POST'});
       localStorage.setItem('motoras_pagado','true');
-      document.getElementById('pagoStatus').textContent='✅ Pago aprobado - IA desbloqueada, ya podés diagnosticar';
+      document.getElementById('pagoStatus').textContent='✅ Pago PayPal aprobado - IA desbloqueada';
       document.getElementById('mecanica').scrollIntoView({behavior:'smooth'});
     },
-    onError: (err)=>{ document.getElementById('pagoStatus').textContent='PayPal error: '+err; }
+    onError: (err)=>{
+      document.getElementById('paypalStatus').textContent='PayPal SDK error (usa el botón amarillo de arriba): '+err;
+    }
   }).render('#paypal-button-container');
 }
+}catch(e){ document.getElementById('paypalStatus').textContent='PayPal SDK no cargó, usá el botón amarillo'; }
 </script>
 </body>
 </html>
