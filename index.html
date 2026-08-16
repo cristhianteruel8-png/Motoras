@@ -3,54 +3,135 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Motoras</title>
-<link rel="stylesheet" href="css/estilo.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<title>MOTORAS - Tu mecánico inteligente</title>
+<link rel="stylesheet" href="css/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-<header><h1>MOTORAS</h1><p>Asistencia mecánica inteligente con IA</p></header>
-<nav>
-<button onclick="mostrar('inicio')">Inicio</button>
-<button onclick="mostrar('usuario')">Usuario</button>
-<button onclick="mostrar('diagnostico')">IA Mecánica</button>
-<button onclick="mostrar('servicios')">Servicios</button>
-<button onclick="mostrar('prestador')">Prestadores</button>
-<button onclick="mostrar('pago')">Pago</button>
-<button onclick="mostrar('calificacion')">Calificar</button>
-</nav>
+<div class="watermark"></div>
+<div class="watermark-2"></div>
+
+<header class="header">
+  <div class="container">
+    <div class="logo-wrap">
+      <img src="img/logo.png" alt="Motoras" class="logo-header">
+    </div>
+    <nav class="nav">
+      <a href="#inicio">INICIO</a>
+      <a href="#usuario">USUARIO</a>
+      <a href="#mecanica">LA MECÁNICA</a>
+      <a href="#servicios">SERVICIOS</a>
+      <a href="#pago" class="btn-pago-nav">PAGO $4.635</a>
+    </nav>
+  </div>
+</header>
+
 <main>
-<section id="inicio" class="activo"><div class="card"><h2>Bienvenido</h2></div></section>
-<section id="usuario"><div class="card"><h2>Mi cuenta</h2>
-<div id="usuarioAuthBox">
-<div class="tabs"><button class="tab-btn activo-tab" onclick="cambiarTab('usuario','login',this)">Iniciar sesión</button><button class="tab-btn" onclick="cambiarTab('usuario','registro',this)">Registrarse</button></div>
-<div id="usuario-login" class="tab-panel activo-tab-panel"><input id="loginEmailUsuario" type="email" placeholder="Email"><input id="loginPassUsuario" type="password" placeholder="Contraseña"><button class="btn" onclick="iniciarSesionUsuarioReal()">Entrar</button></div>
-<div id="usuario-registro" class="tab-panel"><input id="nombre" placeholder="Nombre"><input id="email" type="email" placeholder="Email"><input id="passUsuario" type="password" placeholder="Contraseña"><input id="auto" placeholder="Marca y modelo"><input id="anio" type="number" placeholder="Año"><input id="motor" placeholder="Motor"><button class="btn" onclick="registrarUsuarioReal()">Crear cuenta</button></div>
-<div id="usuarioResultado" class="resultado" style="display:none;"></div>
-</div><div id="usuarioPanel" style="display:none;"><button class="btn" onclick="cerrarSesionUsuario()">Cerrar sesión</button></div></div></section>
-<section id="diagnostico"><div class="card"><h2>🤖 MOTORAS IA</h2>
-<div id="bloqueoIA" class="resultado" style="display:block; border-left:4px solid #d00;">🔒 <b>Acceso bloqueado</b><br>Tenés que pagar primero.<br><br><button class="btn" onclick="mostrar('pago')">IR A PAGAR</button></div>
-<div id="formIA" style="display:none;"><textarea id="problema" placeholder="Describe la falla"></textarea><input id="codigo" placeholder="OBD2"><button class="btn" onclick="guardarDiagnosticoReal()">ANALIZAR</button><div id="respuestaIA" class="resultado"></div></div></div></section>
-<section id="servicios"><div class="card"><h2>🔧 Asistencia</h2><input id="ubicacion" readonly><button class="btn" onclick="usarMiUbicacionPedido()">📍 Mi ubicación</button><button class="btn" onclick="guardarPedidoReal()">Buscar ayuda</button><div id="servicioResultado" class="resultado" style="display:none;"></div><div id="ubicacionServiciosTexto" class="resultado"></div><div id="mapaServicios" style="height:350px;"></div></div></section>
-<section id="prestador"><div class="card"><h2>🛠 Prestador</h2><div id="prestadorAuthBox"><div id="prestador-login" class="tab-panel activo-tab-panel"><input id="loginEmailPrestador" placeholder="Email"><input id="loginPassPrestador" type="password" placeholder="Pass"><button class="btn" onclick="iniciarSesionPrestadorReal()">Entrar</button></div><div id="prestador-registro" class="tab-panel"><input id="nombrePrestador" placeholder="Nombre"><input id="emailPrestador" placeholder="Email"><input id="passPrestador" type="password"><select id="tipoPrestador"><option>Taller</option><option>Grúa</option><option>Mecánico móvil</option></select><input id="zonaPrestador" placeholder="Zona"><button class="btn" onclick="registrarPrestadorReal()">Registrarme</button></div><div id="prestadorResultado" class="resultado" style="display:none;"></div></div><div id="prestadorPanel" style="display:none;"><div id="listaPedidos"></div><button class="btn" onclick="cargarPedidosReal()">Actualizar</button><button class="btn" onclick="cerrarSesionPrestador()">Cerrar</button></div></div></section>
-<section id="pago"><div class="card"><h2>💰 MOTORAS PAGO</h2>
-<h3><span id="precioUSD">3 USD</span> / <span id="precioARS">calculando...</span></h3>
-<p style="font-size:12px;">Dólar blue hoy: <b><span id="dolarValor">cargando...</span></b></p>
-<button class="btn" onclick="pagarConMercadoPago()">PAGAR CON MERCADO PAGO</button>
-<div id="pagoResultado" class="resultado" style="display:none;"></div>
-<h3>O PayPal</h3><div id="paypal-button-container"></div>
-<button class="btn" onclick="localStorage.removeItem('motoras_pagado'); desbloquearIA();">🧪 Borrar pago prueba</button>
-</div></section>
-<section id="calificacion"><div class="card"><h2>⭐ Calificar</h2><select id="estrellas"><option>⭐⭐⭐⭐⭐</option></select><button class="btn" onclick="guardarCalificacionReal()">Enviar</button><div id="calificacionResultado" class="resultado" style="display:none;"></div></div></section>
+<section id="inicio" class="hero">
+  <div class="hero-bg-logo"></div>
+  <div class="container hero-content">
+    <div class="hero-text">
+      <div class="badge">⚡ +500 MECÁNICOS ACTIVOS - 24HS</div>
+      <h1>Tu mecánico<br><span class="red">inteligente</span><br>en el bolsillo</h1>
+      <p>Diagnóstico con IA + auxilio mecánico en todo Argentina. Describí tu falla y te mandamos el mecánico exacto que necesitás.</p>
+      <div class="hero-ctas">
+        <button onclick="document.getElementById('mecanica').scrollIntoView({behavior:'smooth'})" class="btn-primary">DIAGNOSTICAR MI AUTO 🔧</button>
+        <button onclick="document.getElementById('servicios').scrollIntoView({behavior:'smooth'})" class="btn-secondary">PEDIR AUXILIO AHORA</button>
+      </div>
+      <div class="stats">
+        <div><strong>3 USD</strong><span>por consulta</span></div>
+        <div><strong id="dolar-hero">$1.545</strong><span>dólar blue hoy</span></div>
+        <div><strong>15 MIN</strong><span>tiempo promedio</span></div>
+      </div>
+    </div>
+    <div class="hero-logo">
+      <div class="glow"></div>
+      <img src="img/logo.png" alt="Motoras" class="logo-hero">
+    </div>
+  </div>
+</section>
+
+<section id="usuario" class="section dark">
+  <div class="container">
+    <h2 class="section-title"><span class="num">01</span> TUS DATOS</h2>
+    <div class="card glass">
+      <div class="grid-2">
+        <input id="nombre" placeholder="Tu nombre">
+        <input id="telefono" placeholder="WhatsApp">
+        <input id="patente" placeholder="Patente">
+        <input id="ubicacion" placeholder="Ubicación (ej: Capilla del Monte)">
+      </div>
+      <button id="guardarUsuario" class="btn-primary full">GUARDAR DATOS</button>
+      <div id="usuarioStatus" class="status"></div>
+    </div>
+  </div>
+</section>
+
+<section id="mecanica" class="section">
+  <div class="container">
+    <h2 class="section-title"><span class="num">02</span> LA MECÁNICA - DIAGNÓSTICO CON IA</h2>
+    <div class="card glass large">
+      <div class="ia-header">
+        <img src="img/logo.png" class="ia-logo">
+        <div>
+          <h3>MOTORAS IA</h3>
+          <p>Contame qué le pasa a tu auto y te digo qué es y cuánto sale</p>
+        </div>
+      </div>
+      <textarea id="fallaInput" rows="4" placeholder="Ej: Mi auto hace un ruido raro al frenar..."></textarea>
+      <div class="row">
+        <input type="file" id="fotoInput" accept="image/*" class="file">
+        <input type="file" id="audioInput" accept="audio/*" class="file">
+      </div>
+      <button id="diagnosticarBtn" class="btn-primary full glow-btn">🧠 DIAGNOSTICAR CON IA - 3 USD</button>
+      <div id="diagnosticoResult" class="result"></div>
+    </div>
+  </div>
+</section>
+
+<section id="servicios" class="section dark">
+  <div class="container">
+    <h2 class="section-title"><span class="num">03</span> SERVICIOS 24HS</h2>
+    <div class="grid-3">
+      <div class="service-card"><div class="icon">🚛</div><h3>Grúa</h3><p>Llegamos en 20 min</p><button class="btn-card" onclick="solicitarServicio('grua')">PEDIR GRÚA</button></div>
+      <div class="service-card featured"><div class="icon">🔧</div><h3>Mecánico a Domicilio</h3><p>El especialista que necesitás</p><button class="btn-card primary" onclick="solicitarServicio('mecanico')">PEDIR MECÁNICO</button></div>
+      <div class="service-card"><div class="icon">⚡</div><h3>Electricista</h3><p>Batería, luces, arranque</p><button class="btn-card" onclick="solicitarServicio('electricista')">PEDIR ELECTRICISTA</button></div>
+    </div>
+    <div id="prestadoresList" class="prestadores"></div>
+  </div>
+</section>
+
+<section id="pago" class="section pago-section">
+  <div class="container">
+    <h2 class="section-title"><span class="num">04</span> DESBLOQUEAR IA</h2>
+    <div class="card glass pago-card">
+      <div class="pago-header">
+        <img src="img/logo.png" class="pago-logo">
+        <h3>Consulta premium Motoras</h3>
+      </div>
+      <div class="precio-box">
+        <div class="precio"><span class="usd">$3 USD</span><span class="ars" id="precio-ars">= $4.635 ARS</span></div>
+        <div class="dolar-info">Dólar blue: <span id="dolar-valor">$1.545</span> - Actualizado hoy</div>
+      </div>
+      <div class="pagos-grid">
+        <button id="mercadopagoBtn" class="btn-mp">💳 PAGAR CON MERCADO PAGO</button>
+        <div id="paypal-button-container"></div>
+      </div>
+      <div id="pagoStatus" class="status"></div>
+      <p class="small">Pago seguro. Se desbloquea la IA al instante.</p>
+    </div>
+  </div>
+</section>
 </main>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script type="module" src="js/config.js"></script>
-<script type="module" src="js/app.js"></script>
-<script type="module">
-import { CONFIG } from './js/config.js';
-const s = document.createElement('script');
-s.src = `https://www.paypal.com/sdk/js?client-id=${CONFIG.PAYPAL_CLIENT_ID}&currency=USD`;
-document.head.appendChild(s);
-</script>
+
+<footer class="footer">
+  <div class="container">
+    <img src="img/logo.png" class="footer-logo">
+    <p>MOTORAS © 2026 - Capilla del Monte, Córdoba</p>
+  </div>
+</footer>
+
+<script src="https://www.paypal.com/sdk/js?client-id=AbMb_RzOR5YErLs9s6hSejhGtwEiSN7itjKtXlv3CwL-EnouKFyoUmW3zhcQWU-Femg47NXNxGXfh2j3x&currency=USD"></script>
+<script src="js/app.js"></script>
 </body>
-                                                                                                                                                                                                                         </html>
+  </html>
