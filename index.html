@@ -5,37 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MOTORAS - Tu mecánico inteligente</title>
 <style>
-body{margin:0;background:#070709;color:#fff;font-family:Inter,system-ui,sans-serif}
-.header{height:90px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:rgba(7,7,9,0.9);border-bottom:1px solid rgba(255,255,255,0.1);position:sticky;top:0;z-index:10}
-.logo-header{height:80px;filter:drop-shadow(0 0 12px rgba(255,26,26,0.6))}
-.hero{min-height:90vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px 20px;position:relative;overflow:hidden}
-.hero h1{font-size:56px;line-height:0.9;font-weight:900;margin:20px 0}
+body{margin:0;background:#070709;color:#fff;font-family:Inter,sans-serif;overflow-x:hidden}
+.header{height:95px;display:flex;align-items:center;background:rgba(7,7,9,0.95);border-bottom:1px solid rgba(255,255,255,0.12);position:sticky;top:0;z-index:100}
+.container{max-width:1200px;margin:0 auto;padding:0 20px;width:100%;display:flex;justify-content:space-between;align-items:center}
+.logo-header{height:85px;width:auto;filter:drop-shadow(0 0 12px rgba(255,26,26,0.6))}
+.hero{min-height:90vh;display:flex;align-items:center;padding:60px 0;position:relative}
+.hero-content{max-width:1200px;margin:0 auto;padding:0 20px;width:100%;display:grid;grid-template-columns:1.2fr 0.8fr;gap:40px;align-items:center}
+.badge{background:rgba(255,26,26,0.15);border:1px solid rgba(255,26,26,0.3);padding:8px 16px;border-radius:30px;font-size:12px;display:inline-block;margin-bottom:20px}
+.hero h1{font-size:64px;line-height:0.9;font-weight:900;margin-bottom:20px}
 .hero h1 span{color:#ff1a1a;text-shadow:0 0 30px rgba(255,26,26,0.6)}
-.logo-hero{width:380px;max-width:85vw;filter:drop-shadow(0 0 40px rgba(255,26,26,0.7));animation:float 4s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.btn{background:#ff1a1a;color:#fff;border:none;padding:18px 30px;border-radius:14px;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 0 30px rgba(255,26,26,0.4);margin:8px}
-.glow{position:absolute;width:700px;height:700px;background:radial-gradient(circle, rgba(255,26,26,0.35) 0%, transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);filter:blur(30px);z-index:0;opacity:0.6}
-.content{position:relative;z-index:1}
-.stats{display:flex;gap:30px;justify-content:center;border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;margin-top:20px}
+.btn{background:#ff1a1a;color:#fff;border:none;padding:18px 32px;border-radius:14px;font-weight:800;cursor:pointer;box-shadow:0 0 30px rgba(255,26,26,0.4);margin-right:12px}
+.logo-hero{width:420px;max-width:100%;height:auto;filter:drop-shadow(0 0 50px rgba(255,26,26,0.7));animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.glow{position:absolute;width:700px;height:700px;background:radial-gradient(circle, rgba(255,26,26,0.35) 0%, transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);filter:blur(30px);z-index:-1}
+@media(max-width:900px){.hero-content{grid-template-columns:1fr}.hero h1{font-size:44px}.logo-hero{width:300px}}
 </style>
 </head>
 <body>
 <header class="header">
-<img src="https://raw.githubusercontent.com/cristhianteruel8-png/Motoras/principal/imagen/motoras_logo_transparente.png" class="logo-header" alt="Motoras">
+<div class="container">
+<img src="imagen/motoras_logo_transparente.png" class="logo-header" alt="Motoras">
 <div style="background:#ff1a1a;padding:10px 18px;border-radius:30px;font-weight:800">PAGO $4.635</div>
+</div>
 </header>
 <section class="hero">
 <div class="glow"></div>
-<div class="content">
-<img src="https://raw.githubusercontent.com/cristhianteruel8-png/Motoras/principal/imagen/motoras_logo_transparente.png" class="logo-hero" alt="Motoras">
+<div class="hero-content">
+<div>
+<div class="badge">⚡ +500 MECÁNICOS ACTIVOS - 24HS</div>
 <h1>Tu mecánico<br><span>inteligente</span><br>en el bolsillo</h1>
-<p style="color:#aaa;max-width:520px;margin:0 auto 24px">Diagnóstico con IA + auxilio mecánico 24HS en todo Argentina</p>
+<p style="color:#aaa;font-size:18px;margin-bottom:30px;max-width:520px">Diagnóstico con IA + auxilio mecánico en todo Argentina. Describí tu falla y te mandamos el mecánico exacto.</p>
 <button class="btn">DIAGNOSTICAR MI AUTO 🔧</button>
-<button class="btn" style="background:rgba(255,255,255,0.08)">PEDIR AUXILIO AHORA</button>
-<div class="stats">
-<div><b>3 USD</b><br><small style="color:#777">por consulta</small></div>
-<div><b>$1.545</b><br><small style="color:#777">dólar blue hoy</small></div>
-<div><b>15 MIN</b><br><small style="color:#777">tiempo promedio</small></div>
+<button class="btn" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12)">PEDIR AUXILIO AHORA</button>
+</div>
+<div style="display:flex;justify-content:center">
+<img src="imagen/motoras_logo_transparente.png" class="logo-hero" alt="Motoras">
 </div>
 </div>
 </section>
