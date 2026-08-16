@@ -1,12 +1,5 @@
 const DOLAR_BLUE = 1545;
 const PRECIO_USD = 3;
-function actualizarPrecio(){
-  const ars = PRECIO_USD * DOLAR_BLUE;
-  document.getElementById('precio-ars').textContent = `= $${ars.toLocaleString('es-AR')} ARS`;
-  document.getElementById('dolar-valor').textContent = `$${DOLAR_BLUE}`;
-  document.getElementById('dolar-hero').textContent = `$${DOLAR_BLUE}`;
-}
-actualizarPrecio();
 document.getElementById('guardarUsuario')?.addEventListener('click',()=>{
   const data = {
     nombre: document.getElementById('nombre').value,
@@ -30,20 +23,20 @@ document.getElementById('diagnosticarBtn')?.addEventListener('click', async ()=>
 });
 function solicitarServicio(tipo){ alert('Solicitando '+tipo); }
 document.getElementById('mercadopagoBtn')?.addEventListener('click', async ()=>{
-  const res = await fetch('/api/mercadopago/crear-preferencia',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({monto: PRECIO_USD*DOLAR_BLUE})});
+  const res = await fetch('/api/mercadopago/crear-preferencia',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({monto: 4635})});
   const data = await res.json();
   if(data.init_point) window.location.href=data.init_point;
 });
 if(window.paypal){
   paypal.Buttons({
     createOrder: async ()=>{
-      const res = await fetch('/api/paypal/crear-orden',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({monto: PRECIO_USD})});
+      const res = await fetch('/api/paypal/crear-orden',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({monto: 3})});
       const data = await res.json();
       return data.id;
     },
     onApprove: async (data)=>{
       await fetch('/api/paypal/capturar-orden',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderID: data.orderID})});
-      document.getElementById('pagoStatus').textContent='✅ Pago aprobado - IA desbloqueada';
+      document.getElementById('pagoStatus').textContent='✅ Pago aprobado';
     }
   }).render('#paypal-button-container');
 }
