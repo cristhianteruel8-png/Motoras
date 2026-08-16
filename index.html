@@ -4,44 +4,76 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MOTORAS - Tu mecánico inteligente</title>
-<style>
-body{margin:0;background:#070709;color:#fff;font-family:Inter,sans-serif;overflow-x:hidden}
-.header{height:95px;display:flex;align-items:center;background:rgba(7,7,9,0.95);border-bottom:1px solid rgba(255,255,255,0.12);position:sticky;top:0;z-index:100}
-.container{max-width:1200px;margin:0 auto;padding:0 20px;width:100%;display:flex;justify-content:space-between;align-items:center}
-.logo-header{height:85px;width:auto;filter:drop-shadow(0 0 12px rgba(255,26,26,0.6))}
-.hero{min-height:90vh;display:flex;align-items:center;padding:60px 0;position:relative}
-.hero-content{max-width:1200px;margin:0 auto;padding:0 20px;width:100%;display:grid;grid-template-columns:1.2fr 0.8fr;gap:40px;align-items:center}
-.badge{background:rgba(255,26,26,0.15);border:1px solid rgba(255,26,26,0.3);padding:8px 16px;border-radius:30px;font-size:12px;display:inline-block;margin-bottom:20px}
-.hero h1{font-size:64px;line-height:0.9;font-weight:900;margin-bottom:20px}
-.hero h1 span{color:#ff1a1a;text-shadow:0 0 30px rgba(255,26,26,0.6)}
-.btn{background:#ff1a1a;color:#fff;border:none;padding:18px 32px;border-radius:14px;font-weight:800;cursor:pointer;box-shadow:0 0 30px rgba(255,26,26,0.4);margin-right:12px}
-.logo-hero{width:420px;max-width:100%;height:auto;filter:drop-shadow(0 0 50px rgba(255,26,26,0.7));animation:float 4s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-.glow{position:absolute;width:700px;height:700px;background:radial-gradient(circle, rgba(255,26,26,0.35) 0%, transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);filter:blur(30px);z-index:-1}
-@media(max-width:900px){.hero-content{grid-template-columns:1fr}.hero h1{font-size:44px}.logo-hero{width:300px}}
-</style>
+<link rel="stylesheet" href="css/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
+<div class="watermark"></div>
+<div class="watermark-2"></div>
 <header class="header">
-<div class="container">
-<img src="imagen/motoras_logo_transparente.png" class="logo-header" alt="Motoras">
-<div style="background:#ff1a1a;padding:10px 18px;border-radius:30px;font-weight:800">PAGO $4.635</div>
-</div>
+  <div class="container">
+    <div class="logo-wrap">
+      <img src="img/logo.png" alt="Motoras" class="logo-header">
+    </div>
+    <nav class="nav">
+      <a href="#inicio">INICIO</a>
+      <a href="#usuario">USUARIO</a>
+      <a href="#mecanica">LA MECÁNICA</a>
+      <a href="#servicios">SERVICIOS</a>
+      <a href="#pago" class="btn-pago-nav">PAGO $4.635</a>
+    </nav>
+  </div>
 </header>
-<section class="hero">
-<div class="glow"></div>
-<div class="hero-content">
-<div>
-<div class="badge">⚡ +500 MECÁNICOS ACTIVOS - 24HS</div>
-<h1>Tu mecánico<br><span>inteligente</span><br>en el bolsillo</h1>
-<p style="color:#aaa;font-size:18px;margin-bottom:30px;max-width:520px">Diagnóstico con IA + auxilio mecánico en todo Argentina. Describí tu falla y te mandamos el mecánico exacto.</p>
-<button class="btn">DIAGNOSTICAR MI AUTO 🔧</button>
-<button class="btn" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12)">PEDIR AUXILIO AHORA</button>
-</div>
-<div style="display:flex;justify-content:center">
-<img src="imagen/motoras_logo_transparente.png" class="logo-hero" alt="Motoras">
-</div>
-</div>
+<main>
+<section id="inicio" class="hero">
+  <div class="hero-bg-logo"></div>
+  <div class="container hero-content">
+    <div class="hero-text">
+      <div class="badge">⚡ +500 MECÁNICOS ACTIVOS - 24HS</div>
+      <h1>Tu mecánico<br><span class="red">inteligente</span><br>en el bolsillo</h1>
+      <p>Diagnóstico con IA + auxilio mecánico en todo Argentina. Describí tu falla y te mandamos el mecánico exacto que necesitás.</p>
+      <div class="hero-ctas">
+        <button onclick="document.getElementById('mecanica').scrollIntoView({behavior:'smooth'})" class="btn-primary">DIAGNOSTICAR MI AUTO 🔧</button>
+        <button onclick="document.getElementById('servicios').scrollIntoView({behavior:'smooth'})" class="btn-secondary">PEDIR AUXILIO AHORA</button>
+      </div>
+      <div class="stats">
+        <div><strong>3 USD</strong><span>por consulta</span></div>
+        <div><strong id="dolar-hero">$1.545</strong><span>dólar blue hoy</span></div>
+        <div><strong>15 MIN</strong><span>tiempo promedio</span></div>
+      </div>
+    </div>
+    <div class="hero-logo">
+      <div class="glow"></div>
+      <img src="img/logo.png" alt="Motoras" class="logo-hero">
+    </div>
+  </div>
 </section>
+<section id="usuario" class="section dark">
+  <div class="container">
+    <h2 class="section-title"><span class="num">01</span> TUS DATOS</h2>
+    <div class="card glass">
+      <div class="grid-2">
+        <input id="nombre" placeholder="Tu nombre">
+        <input id="telefono" placeholder="WhatsApp">
+        <input id="patente" placeholder="Patente">
+        <input id="ubicacion" placeholder="Ubicación">
+      </div>
+      <button id="guardarUsuario" class="btn-primary full">GUARDAR DATOS</button>
+    </div>
+  </div>
+</section>
+<section id="servicios" class="section dark">
+  <div class="container">
+    <h2 class="section-title"><span class="num">03</span> SERVICIOS 24HS</h2>
+    <div class="grid-3">
+      <div class="service-card"><div style="font-size:40px">🚛</div><h3>Grúa</h3><button class="btn-card">PEDIR GRÚA</button></div>
+      <div class="service-card featured"><div style="font-size:40px">🔧</div><h3>Mecánico</h3><button class="btn-card primary">PEDIR MECÁNICO</button></div>
+      <div class="service-card"><div style="font-size:40px">⚡</div><h3>Electricista</h3><button class="btn-card">PEDIR ELECTRICISTA</button></div>
+    </div>
+  </div>
+</section>
+</div>
+</main>
+<script src="js/app.js"></script>
 </body>
-</html>
+  </html>
