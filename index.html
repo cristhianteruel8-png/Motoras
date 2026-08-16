@@ -10,59 +10,77 @@
 body{font-family:'Inter',sans-serif;background:var(--bg);color:#fff;overflow-x:hidden}
 h1,h2,h3{font-family:'Sora',sans-serif}
 .container{max-width:1200px;margin:0 auto;padding:0 20px}
-.watermark{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:url('img/logo.png') no-repeat center/contain;opacity:0.04;pointer-events:none;z-index:-2}
-.watermark-2{position:fixed;top:20%;right:-100px;width:500px;height:500px;background:url('img/logo.png') no-repeat center/contain;opacity:0.03;pointer-events:none;z-index:-2;filter:blur(1px)}
+.watermark{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:url('imagen/motoras_logo_transparente.png') no-repeat center/contain;opacity:0.04;pointer-events:none;z-index:-2}
+.watermark-2{position:fixed;top:20%;right:-100px;width:500px;height:500px;background:url('imagen/motoras_logo_transparente.png') no-repeat center/contain;opacity:0.03;pointer-events:none;z-index:-2;filter:blur(1px)}
 .header{position:sticky;top:0;z-index:100;background:rgba(7,7,9,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:95px;display:flex;align-items:center}
 .header .container{display:flex;justify-content:space-between;align-items:center;width:100%}
-.logo-header{height:90px;filter:drop-shadow(0 0 12px rgba(255,26,26,0.6))}
+.logo-header{height:90px;filter:drop-shadow(0 0 12px rgba(255,26,26,0.6));transition:transform .3s}
+.logo-header:hover{transform:scale(1.05)}
 .nav{display:flex;gap:22px;align-items:center}
-.nav a{color:#aaa;text-decoration:none;font-weight:600;font-size:13px;letter-spacing:1px}
+.nav a{color:#aaa;text-decoration:none;font-weight:600;font-size:13px;letter-spacing:1px;transition:.2s}
 .nav a:hover{color:#fff}
-.btn-pago-nav{background:#ff1a1a;color:#fff!important;padding:10px 18px;border-radius:30px}
+.btn-pago-nav{background:var(--red);color:#fff!important;padding:10px 18px;border-radius:30px;box-shadow:0 0 20px rgba(255,26,26,0.4)}
 .hero{min-height:90vh;display:flex;align-items:center;position:relative;padding:60px 0;overflow:hidden}
-.hero-bg-logo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;height:900px;background:url('img/logo.png') no-repeat center/contain;opacity:0.06;filter:blur(25px);z-index:0}
+.hero-bg-logo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;height:900px;background:url('imagen/motoras_logo_transparente.png') no-repeat center/contain;opacity:0.06;filter:blur(25px);z-index:0}
 .hero-content{display:grid;grid-template-columns:1.2fr 0.8fr;gap:40px;align-items:center;position:relative;z-index:1}
-.badge{background:rgba(255,26,26,0.15);border:1px solid rgba(255,26,26,0.3);padding:8px 16px;border-radius:30px;font-size:12px;display:inline-block;margin-bottom:20px}
+.badge{background:rgba(255,26,26,0.15);border:1px solid rgba(255,26,26,0.3);padding:8px 16px;border-radius:30px;font-size:12px;letter-spacing:1px;display:inline-block;margin-bottom:20px}
 .hero h1{font-size:64px;line-height:0.95;font-weight:800;margin-bottom:20px}
-.hero h1 .red{color:#ff1a1a;text-shadow:0 0 30px rgba(255,26,26,0.6)}
+.hero h1 .red{color:var(--red);text-shadow:0 0 30px rgba(255,26,26,0.6)}
 .hero p{color:#aaa;font-size:18px;line-height:1.6;margin-bottom:30px;max-width:520px}
 .hero-ctas{display:flex;gap:14px;margin-bottom:30px;flex-wrap:wrap}
-.btn-primary{background:#ff1a1a;color:#fff;border:none;padding:16px 28px;border-radius:14px;font-weight:800;cursor:pointer;box-shadow:0 0 30px rgba(255,26,26,0.4)}
-.btn-secondary{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#fff;padding:16px 28px;border-radius:14px;font-weight:600;cursor:pointer}
-.stats{display:flex;gap:30px;border-top:1px solid rgba(255,255,255,0.12);padding-top:20px}
+.btn-primary{background:var(--red);color:#fff;border:none;padding:16px 28px;border-radius:14px;font-weight:800;cursor:pointer;box-shadow:0 0 30px rgba(255,26,26,0.4);transition:.2s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(255,26,26,0.6)}
+.btn-secondary{background:var(--card);border:1px solid var(--border);color:#fff;padding:16px 28px;border-radius:14px;font-weight:600;cursor:pointer;backdrop-filter:blur(10px)}
+.stats{display:flex;gap:30px;border-top:1px solid var(--border);padding-top:20px}
 .stats strong{display:block;font-size:20px}
 .stats span{font-size:12px;color:#777}
 .hero-logo{position:relative;display:flex;justify-content:center;align-items:center}
 .glow{position:absolute;width:500px;height:500px;background:radial-gradient(circle, rgba(255,26,26,0.35) 0%, rgba(201,168,106,0.15) 40%, transparent 70%);filter:blur(20px)}
-.logo-hero{width:420px;height:auto;filter:drop-shadow(0 0 40px rgba(255,26,26,0.7));animation:float 4s ease-in-out infinite}
+.logo-hero{width:420px;height:auto;filter:drop-shadow(0 0 40px rgba(255,26,26,0.7));animation:float 4s ease-in-out infinite;position:relative;z-index:1}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .section{padding:80px 0;position:relative}
 .section.dark{background:linear-gradient(180deg, #0a0a0c 0%, #070709 100%)}
 .section-title{font-size:22px;letter-spacing:2px;margin-bottom:30px;color:#666}
-.section-title .num{color:#ff1a1a;margin-right:12px}
-.card.glass{background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:24px;padding:30px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.section-title .num{color:var(--red);margin-right:12px}
+.card.glass{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:24px;padding:30px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
 .card.large{padding:40px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-input,textarea{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:16px;color:#fff;width:100%;font-size:15px}
+input,textarea{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:14px;padding:16px;color:#fff;width:100%;font-size:15px}
+input:focus,textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(255,26,26,0.15)}
 .full{width:100%;margin-top:12px}
 .ia-header{display:flex;gap:16px;align-items:center;margin-bottom:20px}
-.ia-logo{width:60px}
-.service-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:22px;padding:28px;text-align:center}
-.service-card.featured{border-color:#ff1a1a;box-shadow:0 0 30px rgba(255,26,26,0.2)}
+.ia-logo{width:60px;height:auto}
+.service-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:28px;text-align:center;transition:.3s}
+.service-card:hover{transform:translateY(-6px);border-color:var(--red)}
+.service-card.featured{border-color:var(--red);box-shadow:0 0 30px rgba(255,26,26,0.2)}
 .service-card .icon{font-size:40px;margin-bottom:12px}
-.btn-card{margin-top:16px;background:transparent;border:1px solid rgba(255,255,255,0.12);color:#fff;padding:12px 20px;border-radius:12px;cursor:pointer;width:100%;font-weight:600}
-.btn-card.primary{background:#ff1a1a;border-color:#ff1a1a}
+.btn-card{margin-top:16px;background:transparent;border:1px solid var(--border);color:#fff;padding:12px 20px;border-radius:12px;cursor:pointer;width:100%;font-weight:600}
+.btn-card.primary{background:var(--red);border-color:var(--red)}
 .pago-card{text-align:center}
 .pago-logo{width:120px;margin-bottom:10px}
+.precio-box{margin:20px 0}
 .precio .usd{font-size:42px;font-weight:800}
 .precio .ars{display:block;color:#aaa;margin-top:6px}
 .dolar-info{font-size:12px;color:#666;margin-top:10px}
 .pagos-grid{display:grid;gap:14px;margin:20px 0}
 .btn-mp{background:#009ee3;color:#fff;border:none;padding:16px;border-radius:14px;font-weight:800;cursor:pointer}
-.footer{padding:50px 0;border-top:1px solid rgba(255,255,255,0.12);text-align:center}
+.small{font-size:11px;color:#555}
+.footer{padding:50px 0;border-top:1px solid var(--border);text-align:center}
 .footer-logo{width:140px;opacity:0.8;margin-bottom:12px}
-@media(max-width:900px){.hero-content{grid-template-columns:1fr}.hero h1{font-size:44px}.logo-hero{width:300px}.logo-header{height:70px}.header{height:80px}.grid-2,.grid-3{grid-template-columns:1fr}}
+.footer p{color:#555;font-size:13px}
+@media(max-width:900px){
+  .hero-content{grid-template-columns:1fr}
+  .hero h1{font-size:44px}
+  .logo-hero{width:300px}
+  .logo-header{height:70px}
+  .header{height:80px}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .hero-ctas{flex-direction:column}
+}
+.watermark{background:url('imagen/motoras_logo_transparente.png') no-repeat center/contain}
+.watermark-2{background:url('imagen/motoras_logo_transparente.png') no-repeat center/contain}
+.hero-bg-logo{background:url('imagen/motoras_logo_transparente.png') no-repeat center/contain}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
@@ -71,7 +89,9 @@ input,textarea{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.12
 <div class="watermark-2"></div>
 <header class="header">
   <div class="container">
-    <img src="img/logo.png" alt="Motoras" class="logo-header">
+    <div class="logo-wrap">
+      <img src="imagen/motoras_logo_transparente.png" alt="Motoras" class="logo-header">
+    </div>
     <nav class="nav">
       <a href="#inicio">INICIO</a>
       <a href="#usuario">USUARIO</a>
@@ -88,7 +108,7 @@ input,textarea{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.12
     <div class="hero-text">
       <div class="badge">⚡ +500 MECÁNICOS ACTIVOS - 24HS</div>
       <h1>Tu mecánico<br><span class="red">inteligente</span><br>en el bolsillo</h1>
-      <p>Diagnóstico con IA + auxilio mecánico en todo Argentina.</p>
+      <p>Diagnóstico con IA + auxilio mecánico en todo Argentina. Describí tu falla y te mandamos el mecánico exacto que necesitás.</p>
       <div class="hero-ctas">
         <button onclick="document.getElementById('mecanica').scrollIntoView({behavior:'smooth'})" class="btn-primary">DIAGNOSTICAR MI AUTO 🔧</button>
         <button onclick="document.getElementById('servicios').scrollIntoView({behavior:'smooth'})" class="btn-secondary">PEDIR AUXILIO AHORA</button>
@@ -101,7 +121,7 @@ input,textarea{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.12
     </div>
     <div class="hero-logo">
       <div class="glow"></div>
-      <img src="img/logo.png" alt="Motoras" class="logo-hero">
+      <img src="imagen/motoras_logo_transparente.png" alt="Motoras" class="logo-hero">
     </div>
   </div>
 </section>
@@ -113,10 +133,10 @@ input,textarea{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.12
         <input id="nombre" placeholder="Tu nombre">
         <input id="telefono" placeholder="WhatsApp">
         <input id="patente" placeholder="Patente">
-        <input id="ubicacion" placeholder="Ubicación">
+        <input id="ubicacion" placeholder="Ubicación (ej: Capilla del Monte)">
       </div>
       <button id="guardarUsuario" class="btn-primary full">GUARDAR DATOS</button>
-      <div id="usuarioStatus"></div>
+      <div id="usuarioStatus" class="status"></div>
     </div>
   </div>
 </section>
@@ -125,12 +145,12 @@ input,textarea{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.12
     <h2 class="section-title"><span class="num">02</span> LA MECÁNICA - DIAGNÓSTICO CON IA</h2>
     <div class="card glass large">
       <div class="ia-header">
-        <img src="img/logo.png" class="ia-logo">
-        <div><h3>MOTORAS IA</h3><p>Contame qué le pasa a tu auto</p></div>
+        <img src="imagen/motoras_logo_transparente.png" class="ia-logo">
+        <div><h3>MOTORAS IA</h3><p>Contame qué le pasa a tu auto y te digo qué es y cuánto sale</p></div>
       </div>
-      <textarea id="fallaInput" rows="4" placeholder="Ej: ruido al frenar..."></textarea>
-      <button id="diagnosticarBtn" class="btn-primary full">🧠 DIAGNOSTICAR CON IA - 3 USD</button>
-      <div id="diagnosticoResult"></div>
+      <textarea id="fallaInput" rows="4" placeholder="Ej: Mi auto hace un ruido raro al frenar, como un chillido..."></textarea>
+      <button id="diagnosticarBtn" class="btn-primary full glow-btn">🧠 DIAGNOSTICAR CON IA - 3 USD</button>
+      <div id="diagnosticoResult" class="result"></div>
     </div>
   </div>
 </section>
@@ -138,32 +158,41 @@ input,textarea{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.12
   <div class="container">
     <h2 class="section-title"><span class="num">03</span> SERVICIOS 24HS</h2>
     <div class="grid-3">
-      <div class="service-card"><div class="icon">🚛</div><h3>Grúa</h3><button class="btn-card" onclick="solicitarServicio('grua')">PEDIR GRÚA</button></div>
-      <div class="service-card featured"><div class="icon">🔧</div><h3>Mecánico a Domicilio</h3><button class="btn-card primary" onclick="solicitarServicio('mecanico')">PEDIR MECÁNICO</button></div>
-      <div class="service-card"><div class="icon">⚡</div><h3>Electricista</h3><button class="btn-card" onclick="solicitarServicio('electricista')">PEDIR ELECTRICISTA</button></div>
+      <div class="service-card"><div class="icon">🚛</div><h3>Grúa</h3><p>Llegamos en 20 min a donde estés</p><button class="btn-card" onclick="solicitarServicio('grua')">PEDIR GRÚA</button></div>
+      <div class="service-card featured"><div class="icon">🔧</div><h3>Mecánico a Domicilio</h3><p>El especialista que necesitás</p><button class="btn-card primary" onclick="solicitarServicio('mecanico')">PEDIR MECÁNICO</button></div>
+      <div class="service-card"><div class="icon">⚡</div><h3>Electricista</h3><p>Batería, luces, arranque</p><button class="btn-card" onclick="solicitarServicio('electricista')">PEDIR ELECTRICISTA</button></div>
     </div>
+    <div id="prestadoresList" class="prestadores"></div>
   </div>
 </section>
-<section id="pago" class="section">
+<section id="pago" class="section pago-section">
   <div class="container">
     <h2 class="section-title"><span class="num">04</span> DESBLOQUEAR IA</h2>
     <div class="card glass pago-card">
-      <img src="img/logo.png" class="pago-logo">
-      <div class="precio"><span class="usd">$3 USD</span><span class="ars">= $4.635 ARS</span></div>
-      <button id="mercadopagoBtn" class="btn-mp">💳 PAGAR CON MERCADO PAGO</button>
-      <div id="paypal-button-container"></div>
-      <div id="pagoStatus"></div>
+      <div class="pago-header">
+        <img src="imagen/motoras_logo_transparente.png" class="pago-logo">
+        <h3>Consulta premium Motoras</h3>
+      </div>
+      <div class="precio-box">
+        <div class="precio"><span class="usd">$3 USD</span><span class="ars" id="precio-ars">= $4.635 ARS</span></div>
+        <div class="dolar-info">Dólar blue: <span id="dolar-valor">$1.545</span></div>
+      </div>
+      <div class="pagos-grid">
+        <button id="mercadopagoBtn" class="btn-mp">💳 PAGAR CON MERCADO PAGO</button>
+        <div id="paypal-button-container"></div>
+      </div>
+      <div id="pagoStatus" class="status"></div>
     </div>
   </div>
 </section>
 </main>
 <footer class="footer">
   <div class="container">
-    <img src="img/logo.png" class="footer-logo">
+    <img src="imagen/motoras_logo_transparente.png" class="footer-logo">
     <p>MOTORAS © 2026 - Capilla del Monte, Córdoba</p>
   </div>
 </footer>
 <script src="https://www.paypal.com/sdk/js?client-id=AbMb_RzOR5YErLs9s6hSejhGtwEiSN7itjKtXlv3CwL-EnouKFyoUmW3zhcQWU-Femg47NXNxGXfh2j3x&currency=USD"></script>
 <script src="js/app.js"></script>
 </body>
-  </html>
+</html>
